@@ -264,6 +264,20 @@ public class IntSpan {
         return newSet;
     }
 
+    public IntSpan merge(IntSpan supplied) {
+        ArrayList<Integer> ranges = supplied.ranges();
+        this.addRange(ranges);
+
+        return this;
+    }
+
+    public IntSpan union(IntSpan supplied) {
+        IntSpan newSet = this.copy();
+        newSet.merge(supplied);
+
+        return newSet;
+    }
+
     //----------------------------------------------------------
     // Aliases
     //----------------------------------------------------------
