@@ -1,7 +1,9 @@
-/*
+/**
  * THE SOFTWARE IS PROVIDED "AS IS" WITHOUT A WARRANTY OF ANY KIND. ALL EXPRESS OR IMPLIED
  * REPRESENTATIONS AND WARRANTIES, INCLUDING ANY IMPLIED WARRANTY OF MERCHANTABILITY, FITNESS FOR A
  * PARTICULAR PURPOSE OR NON-INFRINGEMENT, ARE HEREBY DISCLAIMED.
+ *
+ * @author  Qiang Wang
  */
 
 package org.egateam;
@@ -116,6 +118,12 @@ public class IntSpan {
     //----------------------------------------------------------
     // Set cardinality
     //----------------------------------------------------------
+
+    /**
+     * Returns the number of elements in this set.
+     *
+     * @return the number of elements in this set
+     */
     public int cardinality() {
         int cardinality = 0;
         if ( isEmpty() ) {
@@ -131,30 +139,65 @@ public class IntSpan {
         return cardinality;
     }
 
+    /**
+     * Returns <tt>true</tt> if this set contains no elements.
+     *
+     * @return <tt>true</tt> if this set contains no elements
+     */
     public boolean isEmpty() {
         return edgeSize() == 0;
     }
 
+    /**
+     * Returns <tt>true</tt> if this set is not empty.
+     *
+     * @return <tt>true</tt> if this set is not empty
+     */
     public boolean isNotEmpty() {
         return !isEmpty();
     }
 
+    /**
+     * Returns <tt>true</tt> if this set is negtive infinite.
+     *
+     * @return <tt>true</tt> if this set is negtive infinite
+     */
     public boolean isNegInf() {
         return edges.get(0) == negInf;
     }
 
+    /**
+     * Returns <tt>true</tt> if this set is positive infinite.
+     *
+     * @return <tt>true</tt> if this set is positive infinite
+     */
     public boolean isPosInf() {
         return edges.get(edges.size() - 1) == posInf;
     }
 
+    /**
+     * Returns <tt>true</tt> if this set is infinite.
+     *
+     * @return <tt>true</tt> if this set is infinite
+     */
     public boolean isInfinite() {
         return isNegInf() || isPosInf();
     }
 
+    /**
+     * Returns <tt>true</tt> if this set is finite.
+     *
+     * @return <tt>true</tt> if this set is finite
+     */
     public boolean isFinite() {
         return !isInfinite();
     }
 
+    /**
+     * Returns <tt>true</tt> if this set contains all integers.
+     *
+     * @return <tt>true</tt> if this set contains all integers
+     */
     public boolean isUniversal() {
         return edgeSize() == 2 && isNegInf() && isPosInf();
     }
@@ -309,6 +352,13 @@ public class IntSpan {
     //----------------------------------------------------------
     // Set binary operations ( create new set)
     //----------------------------------------------------------
+
+    /**
+     * Returns an identical copy of this <tt>IntSpan</tt> instance. The
+     * elements themselves are also preserved.
+     *
+     * @return a copy of this <tt>IntSpan</tt> instance
+     */
     public IntSpan copy() {
         IntSpan newSet = new IntSpan();
 
@@ -317,6 +367,12 @@ public class IntSpan {
         return newSet;
     }
 
+    /**
+     * Returns a new set that is the union (并集) of this set and the supplied set.
+     *
+     * @param supplied set to be operated with this set
+     * @return the union of this set and the supplied set
+     */
     public IntSpan union(IntSpan supplied) {
         IntSpan newSet = copy();
         newSet.merge(supplied);
@@ -324,6 +380,11 @@ public class IntSpan {
         return newSet;
     }
 
+    /**
+     * Returns a new set that is the absolute complement (绝对补集) of this set.
+     *
+     * @return the absolute complement of this set
+     */
     public IntSpan complement() {
         IntSpan newSet = copy();
         newSet.invert();
@@ -331,6 +392,15 @@ public class IntSpan {
         return newSet;
     }
 
+    /**
+     * Returns a new set that is the relative complement (相对补集) of the supplied set in this set.
+     * Also termed the set-theoretic difference of this set and the supplied set.
+     *
+     * In other words, the set of elements in this set, but not in the supplied set.
+     *
+     * @param supplied set to be operated with this set
+     * @return the relative complement of the supplied set in this set
+     */
     public IntSpan diff(IntSpan supplied) {
         if ( isEmpty() ) {
             return this;
@@ -342,6 +412,12 @@ public class IntSpan {
         }
     }
 
+    /**
+     * Returns a new set that is the intersection (交集) of this set and the supplied set.
+     *
+     * @param supplied set to be operated with this set
+     * @return the intersection of this set and the supplied set
+     */
     public IntSpan intersect(IntSpan supplied) {
         if ( isEmpty() ) {
             return this;
@@ -354,6 +430,14 @@ public class IntSpan {
         }
     }
 
+    /**
+     * Return a new set that contains all of the members that are in this set or the
+     * supplied set but not both.
+     *
+     * @param supplied set to be operated with this set
+     * @return a new set that contains all of the members that are in this set or the supplied set
+     * but not both
+     */
     public IntSpan xor(IntSpan supplied) {
         IntSpan newSet = union(supplied);
         newSet.subtract(intersect(supplied));
