@@ -50,7 +50,7 @@ public class TestCreate {
     }
 
     @Test
-    public void testCreation() {
+    public void testCreationRunlist() {
 
         for ( TestData t : tests ) {
             ArrayList<Integer> array = new ArrayList<Integer>();
@@ -71,5 +71,23 @@ public class TestCreate {
             Assert.assertEquals(set1.runlist(), t.runlist, message);
             Assert.assertEquals(set1.elements(), array, message);
         }
+    }
+
+    @Test
+    public void testCreationInt() {
+        {
+            String message = "Test int";
+
+            IntSpan set = new IntSpan(1);
+
+            String expectedString = "1";
+            ArrayList<Integer> expectedArray = new ArrayList<Integer>();
+            expectedArray.add(1);
+
+            Assert.assertEquals(set.cardinality(), 1, message);
+            Assert.assertEquals(set.asString(), expectedString, message);
+            Assert.assertEquals(set.asArray(), expectedArray, message);
+        }
+
     }
 }
