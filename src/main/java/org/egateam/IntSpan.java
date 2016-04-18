@@ -29,7 +29,7 @@ public class IntSpan {
     }
 
     public IntSpan(IntSpan supplied) {
-        supplied.copy();
+        edges = new ArrayList<Integer>(supplied.edges());
     }
 
     public IntSpan(String runlist) {

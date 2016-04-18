@@ -65,7 +65,7 @@ public class TestCreate {
             Assert.assertEquals(set.asArray(), array, message);
 
             // aliases
-            IntSpan set1 = set.copy();
+            IntSpan set1 = new IntSpan(set.copy());
             Assert.assertEquals(set.size(), t.elements.length, message);
             Assert.assertEquals(set.count(), t.elements.length, message);
             Assert.assertEquals(set1.runlist(), t.runlist, message);
