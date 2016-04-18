@@ -79,6 +79,7 @@ public class IntSpan {
     //----------------------------------------------------------
     // Constructors
     //----------------------------------------------------------
+
     public IntSpan() {
     }
 
@@ -97,6 +98,7 @@ public class IntSpan {
     //----------------------------------------------------------
     // Set contents
     //----------------------------------------------------------
+
     public ArrayList<Integer> edges() {
         return edges;
     }
@@ -269,6 +271,7 @@ public class IntSpan {
     //----------------------------------------------------------
     // Member operations (mutate original set)
     //----------------------------------------------------------
+
     public IntSpan addPair(int lower, int upper) {
         upper++;
 
@@ -512,6 +515,7 @@ public class IntSpan {
     //----------------------------------------------------------
     // Set relations
     //----------------------------------------------------------
+
     public boolean equals(IntSpan supplied) {
         ArrayList<Integer> edges_a = this.edges();
         ArrayList<Integer> edges_b = supplied.edges();
@@ -644,6 +648,7 @@ public class IntSpan {
     //----------------------------------------------------------
     // Aliases
     //----------------------------------------------------------
+
     public int size() {
         return cardinality();
     }
