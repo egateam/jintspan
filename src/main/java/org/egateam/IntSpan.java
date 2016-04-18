@@ -9,11 +9,14 @@ package org.egateam;
 import java.util.ArrayList;
 
 public class IntSpan {
-    public static String emptyString = "-";
+    private static String emptyString = "-";
 
-    int posInf = 2147483647 - 1; // INT_MAX - 1
-    int negInf = (-2147483647 - 1) + 1; // INT_MIN + 1
-    ArrayList<Integer> edges = new ArrayList<Integer>();
+    // Real Largest int is posInf - 1
+    private static int posInf = 2147483647 - 1; // INT_MAX - 1
+    private static int negInf = (-2147483647 - 1) + 1; // INT_MIN + 1
+
+    //
+    private ArrayList<Integer> edges = new ArrayList<Integer>();
 
     //----------------------------------------------------------
     // Constructors
@@ -29,15 +32,229 @@ public class IntSpan {
         runlist = stripWhitespace(runlist);
 
         // empty set
-        if ( runlist.equals("") ) {
-            return;
+        if ( runlist.equals("") || runlist.equals(emptyString) ) {
+            // Do nothing
+        } else {
+            addRange(runlistToRanges(runlist));
         }
-        if ( runlist.equals("-") ) {
-            return;
+    }
+
+    //----------------------------------------------------------
+    // Set contents
+    //----------------------------------------------------------
+    public ArrayList<Integer> edges() {
+        return edges;
+    }
+
+    public int edgeSize() {
+        return edges.size();
+    }
+
+    public int spanSize() {
+        return edgeSize() / 2;
+    }
+
+    public String asString() {
+        if ( isEmpty() ) {
+            return emptyString;
         }
 
-        addRange(runlistToRanges(runlist));
+        String runlist = "";
+
+        for ( int i = 0; i < spanSize(); i++ ) {
+            int lower = edges.get(i * 2);
+            int upper = edges.get(i * 2 + 1) - 1;
+
+            String buf = "";
+            if ( i != 0 ) {
+                buf += ",";
+            }
+
+            if ( lower == upper ) {
+                buf += Integer.toString(lower);
+            } else {
+                buf += Integer.toString(lower) + "-" + Integer.toString(upper);
+            }
+
+            runlist += buf;
+        }
+
+        return runlist;
     }
+
+    public ArrayList<Integer> asArray() {
+        ArrayList<Integer> array = new ArrayList<Integer>();
+        if ( isEmpty() ) {
+            return array;
+        }
+
+        for ( int i = 0; i < spanSize(); i++ ) {
+            int lower = edges.get(i * 2);
+            int upper = edges.get(i * 2 + 1) - 1;
+
+            for ( int n = lower; n <= upper; n++ ) {
+                array.add(n);
+            }
+
+        }
+
+        return array;
+    }
+
+    public ArrayList<Integer> ranges() {
+        ArrayList<Integer> ranges = new ArrayList<Integer>();
+        if ( isEmpty() ) {
+            return ranges;
+        }
+
+        for ( int i = 0; i < spanSize(); i++ ) {
+            int lower = edges.get(i * 2);
+            int upper = edges.get(i * 2 + 1) - 1;
+            ranges.add(lower);
+            ranges.add(upper);
+        }
+        return ranges;
+    }
+
+    //----------------------------------------------------------
+    // Set cardinality
+    //----------------------------------------------------------
+    public int cardinality() {
+        int cardinality = 0;
+        if ( isEmpty() ) {
+            return cardinality;
+        }
+
+        for ( int i = 0; i < spanSize(); i++ ) {
+            int lower = edges.get(i * 2);
+            int upper = edges.get(i * 2 + 1) - 1;
+            cardinality += upper - lower + 1;
+        }
+
+        return cardinality;
+    }
+
+    public boolean isEmpty() {
+        return edgeSize() == 0;
+    }
+
+    public boolean isNotEmpty() {
+        return !isEmpty();
+    }
+
+    public boolean isNegInf() {
+        return edges.get(0) == negInf;
+    }
+
+    public boolean isPosInf() {
+        return edges.get(edges.size() - 1) == posInf;
+    }
+
+    public boolean isInfinite() {
+        return isNegInf() || isPosInf();
+    }
+
+    public boolean isFinite() {
+        return !isInfinite();
+    }
+
+    public boolean isUniversal() {
+        return edgeSize() == 2 && isNegInf() && isPosInf();
+    }
+
+    //----------------------------------------------------------
+    // Member operations (mutate original set)
+    //----------------------------------------------------------
+    public IntSpan addPair(int lower, int upper) {
+        upper++;
+
+        assert (lower <= upper) : "Bad order: " + Integer.toString(lower) + "," + Integer.toString(upper);
+
+        int lowerPos = findPos(lower, 0);
+        int upperPos = findPos(upper + 1, lowerPos);
+
+        if ( (lowerPos & 1) == 1 ) {
+            lower = edges.get(--lowerPos);
+        }
+        if ( (upperPos & 1) == 1 ) {
+            upper = edges.get(upperPos++);
+        }
+
+        for ( int i = lowerPos; i < upperPos; i++ ) {
+            edges.remove(lowerPos);
+        }
+        edges.add(lowerPos, lower);
+        edges.add(lowerPos + 1, upper);
+
+        return this;
+    }
+
+    public IntSpan addRange(ArrayList<Integer> ranges) {
+        assert (ranges.size() % 2 == 0) : "Number of ranges must be even: @ranges\n";
+
+        while ( ranges.size() > 0 ) {
+            int lower = ranges.remove(0);
+            int upper = ranges.remove(0);
+            addPair(lower, upper);
+        }
+
+        return this;
+    }
+
+    public IntSpan add(int n) {
+        addPair(n, n);
+
+        return this;
+    }
+
+    public IntSpan merge(IntSpan supplied) {
+        ArrayList<Integer> ranges = supplied.ranges();
+        this.addRange(ranges);
+
+        return this;
+    }
+
+    //----------------------------------------------------------
+    // Set operations ( create new set)
+    //----------------------------------------------------------
+    public IntSpan copy() {
+        IntSpan newSet = new IntSpan();
+
+        newSet.edges = new ArrayList<Integer>(edges);
+
+        return newSet;
+    }
+
+    public IntSpan union(IntSpan supplied) {
+        IntSpan newSet = this.copy();
+        newSet.merge(supplied);
+
+        return newSet;
+    }
+
+    //----------------------------------------------------------
+    // Set comparisons
+    //----------------------------------------------------------
+
+    //----------------------------------------------------------
+    // Indexing
+    //----------------------------------------------------------
+
+    //----------------------------------------------------------
+    // Extrema
+    //----------------------------------------------------------
+
+    //----------------------------------------------------------
+    // Spans operations
+    //----------------------------------------------------------
+
+    //----------------------------------------------------------
+    // Islands
+    //----------------------------------------------------------
+
+    //----------------------------------------------------------
+    // Private methods
+    //----------------------------------------------------------
 
     private static String stripWhitespace(String string) {
         String result = "";
@@ -96,99 +313,6 @@ public class IntSpan {
         return ranges;
     }
 
-    public ArrayList<Integer> edges() {
-        return edges;
-    }
-
-    public int edgeSize() {
-        return edges.size();
-    }
-
-    public int spanSize() {
-        return edgeSize() / 2;
-    }
-
-    public boolean isEmpty() {
-        return edgeSize() == 0;
-    }
-
-    public int cardinality() {
-        int cardinality = 0;
-        if ( isEmpty() ) {
-            return cardinality;
-        }
-
-        for ( int i = 0; i < spanSize(); i++ ) {
-            int lower = edges.get(i * 2);
-            int upper = edges.get(i * 2 + 1) - 1;
-            cardinality += upper - lower + 1;
-        }
-
-        return cardinality;
-    }
-
-    public ArrayList<Integer> ranges() {
-        ArrayList<Integer> ranges = new ArrayList<Integer>();
-        if ( isEmpty() ) {
-            return ranges;
-        }
-
-        for ( int i = 0; i < spanSize(); i++ ) {
-            int lower = edges.get(i * 2);
-            int upper = edges.get(i * 2 + 1) - 1;
-            ranges.add(lower);
-            ranges.add(upper);
-        }
-        return ranges;
-    }
-
-    public String asString() {
-        if ( isEmpty() ) {
-            return emptyString;
-        }
-
-        String runlist = "";
-
-        for ( int i = 0; i < spanSize(); i++ ) {
-            int lower = edges.get(i * 2);
-            int upper = edges.get(i * 2 + 1) - 1;
-
-            String buf = "";
-            if ( i != 0 ) {
-                buf += ",";
-            }
-
-            if ( lower == upper ) {
-                buf += Integer.toString(lower);
-            } else {
-                buf += Integer.toString(lower) + "-" + Integer.toString(upper);
-            }
-
-            runlist += buf;
-        }
-
-        return runlist;
-    }
-
-    public ArrayList<Integer> asArray() {
-        ArrayList<Integer> array = new ArrayList<Integer>();
-        if ( isEmpty() ) {
-            return array;
-        }
-
-        for ( int i = 0; i < spanSize(); i++ ) {
-            int lower = edges.get(i * 2);
-            int upper = edges.get(i * 2 + 1) - 1;
-
-            for ( int n = lower; n <= upper; n++ ) {
-                array.add(n);
-            }
-
-        }
-
-        return array;
-    }
-
     /*
     Return the index of the first element >= the supplied value.
 
@@ -212,70 +336,6 @@ public class IntSpan {
         }
 
         return low;
-    }
-
-    public IntSpan addPair(int lower, int upper) {
-        upper++;
-
-        assert (lower <= upper) : "Bad order: " + Integer.toString(lower) + "," + Integer.toString(upper);
-
-        int lowerPos = findPos(lower, 0);
-        int upperPos = findPos(upper + 1, lowerPos);
-
-        if ( (lowerPos & 1) == 1 ) {
-            lower = edges.get(--lowerPos);
-        }
-        if ( (upperPos & 1) == 1 ) {
-            upper = edges.get(upperPos++);
-        }
-
-        for ( int i = lowerPos; i < upperPos; i++ ) {
-            edges.remove(lowerPos);
-        }
-        edges.add(lowerPos, lower);
-        edges.add(lowerPos + 1, upper);
-
-        return this;
-    }
-
-    public IntSpan addRange(ArrayList<Integer> ranges) {
-        assert (ranges.size() % 2 == 0) : "Number of ranges must be even: @ranges\n";
-
-        while ( ranges.size() > 0 ) {
-            int lower = ranges.remove(0);
-            int upper = ranges.remove(0);
-            addPair(lower, upper);
-        }
-
-        return this;
-    }
-
-    public IntSpan add(int n) {
-        addPair(n, n);
-
-        return this;
-    }
-
-    public IntSpan copy() {
-        IntSpan newSet = new IntSpan();
-
-        newSet.edges = new ArrayList<Integer>(edges);
-
-        return newSet;
-    }
-
-    public IntSpan merge(IntSpan supplied) {
-        ArrayList<Integer> ranges = supplied.ranges();
-        this.addRange(ranges);
-
-        return this;
-    }
-
-    public IntSpan union(IntSpan supplied) {
-        IntSpan newSet = this.copy();
-        newSet.merge(supplied);
-
-        return newSet;
     }
 
     //----------------------------------------------------------
