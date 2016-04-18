@@ -28,15 +28,12 @@ public class IntSpan {
         addPair(val, val);
     }
 
-    public IntSpan(String runlist) {
-        runlist = stripWhitespace(runlist);
+    public IntSpan(IntSpan supplied) {
+        supplied.copy();
+    }
 
-        // empty set
-        if ( runlist.equals("") || runlist.equals(emptyString) ) {
-            // Do nothing
-        } else {
-            addRange(runlistToRanges(runlist));
-        }
+    public IntSpan(String runlist) {
+        add(runlist);
     }
 
     //----------------------------------------------------------
@@ -201,15 +198,110 @@ public class IntSpan {
         return this;
     }
 
+    public IntSpan merge(IntSpan supplied) {
+        ArrayList<Integer> ranges = supplied.ranges();
+        addRange(ranges);
+
+        return this;
+    }
+
     public IntSpan add(int n) {
         addPair(n, n);
 
         return this;
     }
 
-    public IntSpan merge(IntSpan supplied) {
+    public IntSpan add(IntSpan supplied) {
+        merge(supplied);
+
+        return this;
+    }
+
+    public IntSpan add(String runlist) {
+        runlist = stripWhitespace(runlist);
+
+        // empty set
+        if ( runlist.equals("") || runlist.equals(emptyString) ) {
+            // Do nothing
+        } else {
+            addRange(runlistToRanges(runlist));
+        }
+
+        return this;
+    }
+
+    public IntSpan invert() {
+        if ( isEmpty() ) {
+            // Universal set
+            edges = new ArrayList<Integer>();
+            edges.add(negInf);
+            edges.add(posInf);
+        } else {
+            // Either add or remove infinity from each end. The net effect is always an even number
+            // of additions and deletions
+
+            if ( isNegInf() ) {
+                edges.remove(0); // shift
+            } else {
+                edges.add(0, negInf); // unshift
+            }
+
+            if ( isPosInf() ) {
+                edges.remove(edges.size() - 1); // pop
+            } else {
+                edges.add(posInf); // push
+            }
+        }
+
+        return this;
+    }
+
+    public IntSpan removePair(int lower, int upper) {
+        invert();
+        addPair(lower, upper);
+        invert();
+
+        return this;
+    }
+
+    public IntSpan removeRange(ArrayList<Integer> ranges) {
+        assert (ranges.size() % 2 == 0) : "Number of ranges must be even: @ranges\n";
+
+        invert();
+        addRange(ranges);
+        invert();
+
+        return this;
+    }
+
+    public IntSpan subtract(IntSpan supplied) {
         ArrayList<Integer> ranges = supplied.ranges();
-        this.addRange(ranges);
+        removeRange(ranges);
+
+        return this;
+    }
+
+    public IntSpan remove(int n) {
+        removePair(n, n);
+
+        return this;
+    }
+
+    public IntSpan remove(IntSpan supplied) {
+        subtract(supplied);
+
+        return this;
+    }
+
+    public IntSpan remove(String runlist) {
+        runlist = stripWhitespace(runlist);
+
+        // empty set
+        if ( runlist.equals("") || runlist.equals(emptyString) ) {
+            // Do nothing
+        } else {
+            removeRange(runlistToRanges(runlist));
+        }
 
         return this;
     }
@@ -226,8 +318,45 @@ public class IntSpan {
     }
 
     public IntSpan union(IntSpan supplied) {
-        IntSpan newSet = this.copy();
+        IntSpan newSet = copy();
         newSet.merge(supplied);
+
+        return newSet;
+    }
+
+    public IntSpan complement() {
+        IntSpan newSet = copy();
+        newSet.invert();
+
+        return newSet;
+    }
+
+    public IntSpan diff(IntSpan supplied) {
+        if ( isEmpty() ) {
+            return this;
+        } else {
+            IntSpan newSet = copy();
+            newSet.subtract(supplied);
+
+            return newSet;
+        }
+    }
+
+    public IntSpan intersect(IntSpan supplied) {
+        if ( isEmpty() ) {
+            return this;
+        } else {
+            IntSpan newSet = complement();
+            newSet.merge(supplied.complement());
+            newSet.invert();
+
+            return newSet;
+        }
+    }
+
+    public IntSpan xor(IntSpan supplied) {
+        IntSpan newSet = union(supplied);
+        newSet.subtract(intersect(supplied));
 
         return newSet;
     }
