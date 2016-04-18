@@ -1,9 +1,64 @@
 /**
- * THE SOFTWARE IS PROVIDED "AS IS" WITHOUT A WARRANTY OF ANY KIND. ALL EXPRESS OR IMPLIED
- * REPRESENTATIONS AND WARRANTIES, INCLUDING ANY IMPLIED WARRANTY OF MERCHANTABILITY, FITNESS FOR A
- * PARTICULAR PURPOSE OR NON-INFRINGEMENT, ARE HEREBY DISCLAIMED.
+ * <tt>IntSpan</tt> handles of sets containing integer spans.
+ * <p>
+ * <strong>SYNOPSIS</strong>
+ * <pre>
+ *      import org.egateam.IntSpan;
  *
- * @author  Qiang Wang
+ *      IntSpan set = new IntSpan();
+ *      for (int i : new int[]{1, 2, 3, 5, 7, 9} ) {
+ *          set.add(i);
+ *      }
+ *      set.addPair(100, 10000);
+ *      set.remove(1000);
+ *      System.out.println(set.asString()); // 1-3,5,7,9,100-999,1001-10000
+ * </pre>
+ * <p>
+ * <strong>DESCRIPTION</strong>
+ * <p>
+ * The class <tt>IntSpan</tt> represents sets of integers as a number of inclusive ranges, for
+ * example '1-10,19-23,45-48'. Because many of its operations involve linear searches of the list of
+ * ranges its overall performance tends to be proportional to the number of distinct ranges. This is
+ * fine for small sets but suffers compared to other possible set representations (bit vectors, hash
+ * keys) when the number of ranges grows large.
+ * <p>
+ * This module also represents sets as ranges of values but stores those ranges in order and uses a
+ * binary search for many internal operations so that overall performance tends towards O log N
+ * where N is the number of ranges.
+ * <p>
+ * The internal representation used by this module is extremely simple: a set is represented as a
+ * list of integers. Integers in even numbered positions (0, 2, 4 etc) represent the start of a run
+ * of numbers while those in odd numbered positions represent the ends of runs. As an example the
+ * set (1, 3-7, 9, 11, 12) would be represented internally as (1, 2, 3, 8, 11, 13).
+ * <p>
+ * Sets may be infinite - assuming you're prepared to accept that infinity is actually no more than
+ * a fairly large integer. Specifically the constants <tt>negINF</tt> and <tt>posINF</tt> are defined to be
+ * (- 2^31 + 1) and (2^31 - 2) respectively. To create an infinite set invert an empty one:
+ * <pre>
+ *     IntSpan infSet = new IntSpan().invert();
+ * </pre>
+ * <p>
+ * Sets need only be bounded in one direction - for example this is the set of all positive integers
+ * (assuming you accept the slightly feeble definition of infinity we're using):
+ * <pre>
+ *     IntSpan posInfSet = new IntSpan();
+ *     posInfSet.addPair(1, posInfSet.posInf());
+ * </pre>
+ * <p>
+ * This Java class is ported from the Perl module <tt>AlignDB::IntSpan</tt> which contains many codes from
+ * <tt>Set::IntSpan</tt>, <tt>Set::IntSpan::Fast</tt> and <tt>Set::IntSpan::Island</tt>.
+ * <p>
+ * <strong>AUTHOR</strong>
+ * Qiang Wang, wang-q@outlook.com
+ * <p>
+ * <strong>COPYRIGHT AND LICENSE</strong>
+ * This software is copyright (c) 2016 by Qiang Wang.
+ * <p>
+ * This is free software; you can redistribute it and/or modify it under the same terms as the Perl
+ * 5 programming language system itself.
+ *
+ * @author Qiang Wang
+ * @since 1.6
  */
 
 package org.egateam;
@@ -15,7 +70,7 @@ public class IntSpan {
 
     // Real Largest int is posInf - 1
     private static int posInf = 2147483647 - 1; // INT_MAX - 1
-    private static int negInf = (-2147483647 - 1) + 1; // INT_MIN + 1
+    private static int negInf = -2147483648 + 1; // INT_MIN + 1
 
     //
     private ArrayList<Integer> edges = new ArrayList<Integer>();
@@ -43,6 +98,14 @@ public class IntSpan {
     //----------------------------------------------------------
     public ArrayList<Integer> edges() {
         return edges;
+    }
+
+    public int posInf() {
+        return posInf - 1;
+    }
+
+    public int negInf() {
+        return negInf;
     }
 
     public int edgeSize() {
@@ -436,7 +499,7 @@ public class IntSpan {
      *
      * @param supplied set to be operated with this set
      * @return a new set that contains all of the members that are in this set or the supplied set
-     * but not both
+     *         but not both
      */
     public IntSpan xor(IntSpan supplied) {
         IntSpan newSet = union(supplied);
