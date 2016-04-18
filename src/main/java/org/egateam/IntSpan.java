@@ -307,7 +307,7 @@ public class IntSpan {
     }
 
     //----------------------------------------------------------
-    // Set operations ( create new set)
+    // Set binary operations ( create new set)
     //----------------------------------------------------------
     public IntSpan copy() {
         IntSpan newSet = new IntSpan();
@@ -362,8 +362,34 @@ public class IntSpan {
     }
 
     //----------------------------------------------------------
-    // Set comparisons
+    // Set relations
     //----------------------------------------------------------
+    public boolean equals(IntSpan supplied) {
+        ArrayList<Integer> edges_a = this.edges();
+        ArrayList<Integer> edges_b = supplied.edges();
+
+        if ( edges_a.size() != edges_b.size() ) {
+            return false;
+        }
+
+        for ( int i = 0; i < edges_a.size(); i++ ) {
+            int a = edges_a.get(i);
+            int b = edges_b.get(i);
+            if ( a != b ) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public boolean subset(IntSpan supplied) {
+        return this.diff(supplied).isEmpty();
+    }
+
+    public boolean superset(IntSpan supplied) {
+        return supplied.diff(this).isEmpty();
+    }
 
     //----------------------------------------------------------
     // Indexing
@@ -484,6 +510,10 @@ public class IntSpan {
 
     public ArrayList<Integer> elements() {
         return asArray();
+    }
+
+    public boolean equal(IntSpan supplied) {
+        return equals(supplied);
     }
 
 }
