@@ -32,8 +32,9 @@
  * set (1, 3-7, 9, 11, 12) would be represented internally as (1, 2, 3, 8, 11, 13).
  * <p>
  * Sets may be infinite - assuming you're prepared to accept that infinity is actually no more than
- * a fairly large integer. Specifically the constants <tt>negINF</tt> and <tt>posINF</tt> are defined to be
- * (- 2^31 + 1) and (2^31 - 2) respectively. To create an infinite set invert an empty one:
+ * a fairly large integer. Specifically the constants <tt>negINF</tt> and <tt>posINF</tt> are
+ * defined to be (- 2^31 + 1) and (2^31 - 2) respectively. To create an infinite set invert an empty
+ * one:
  * <pre>
  *     IntSpan infSet = new IntSpan().invert();
  * </pre>
@@ -45,8 +46,8 @@
  *     posInfSet.addPair(1, posInfSet.posInf());
  * </pre>
  * <p>
- * This Java class is ported from the Perl module <tt>AlignDB::IntSpan</tt> which contains many codes from
- * <tt>Set::IntSpan</tt>, <tt>Set::IntSpan::Fast</tt> and <tt>Set::IntSpan::Island</tt>.
+ * This Java class is ported from the Perl module <tt>AlignDB::IntSpan</tt> which contains many
+ * codes from <tt>Set::IntSpan</tt>, <tt>Set::IntSpan::Fast</tt> and <tt>Set::IntSpan::Island</tt>.
  * <p>
  * <strong>AUTHOR</strong>
  * Qiang Wang, wang-q@outlook.com
@@ -458,7 +459,7 @@ public class IntSpan {
     /**
      * Returns a new set that is the relative complement (相对补集) of the supplied set in this set.
      * Also termed the set-theoretic difference of this set and the supplied set.
-     *
+     * <p>
      * In other words, the set of elements in this set, but not in the supplied set.
      *
      * @param supplied set to be operated with this set
@@ -499,7 +500,7 @@ public class IntSpan {
      *
      * @param supplied set to be operated with this set
      * @return a new set that contains all of the members that are in this set or the supplied set
-     *         but not both
+     * but not both
      */
     public IntSpan xor(IntSpan supplied) {
         IntSpan newSet = union(supplied);
