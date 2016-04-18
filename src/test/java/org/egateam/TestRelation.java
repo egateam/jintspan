@@ -51,7 +51,6 @@ public class TestRelation {
         System.out.println("Test relation");
     }
 
-
     @Test
     public void testRelation() {
         for ( int i = 0; i < sets.length; i++ ) {
@@ -63,6 +62,7 @@ public class TestRelation {
 
                 // equals
                 Assert.assertEquals(A.equals(B), equals[i][j] != 0, message + " equals");
+                Assert.assertEquals(A.equal(B), equals[i][j] != 0, message + " equals");
 
                 // subset
                 Assert.assertEquals(A.subset(B), subset[i][j] != 0, message + " subset");
