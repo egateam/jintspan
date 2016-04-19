@@ -66,19 +66,19 @@ public class TestBinary {
             IntSpan B = new IntSpan(t.B);
 
             // union
-            Assert.assertEquals(A.union(B).asArray(), new IntSpan(t.U).asArray(), message + " union");
+            Assert.assertEquals(A.union(B).asString(), new IntSpan(t.U).asString(), message + " union");
 
             // intersect
-            Assert.assertEquals(A.intersect(B).asArray(), new IntSpan(t.I).asArray(), message + " intersect");
+            Assert.assertEquals(A.intersect(B).asString(), new IntSpan(t.I).asString(), message + " intersect");
 
             // xor
-            Assert.assertEquals(A.xor(B).asArray(), new IntSpan(t.X).asArray(), message + " xor");
+            Assert.assertEquals(A.xor(B).asString(), new IntSpan(t.X).asString(), message + " xor");
 
             // diff A-B
-            Assert.assertEquals(A.diff(B).asArray(), new IntSpan(t.AB).asArray(), message + " diff A-B");
+            Assert.assertEquals(A.diff(B).asString(), new IntSpan(t.AB).asString(), message + " diff A-B");
 
             // diff B-A
-            Assert.assertEquals(B.diff(A).asArray(), new IntSpan(t.BA).asArray(), message + " diff B-A");
+            Assert.assertEquals(B.diff(A).asString(), new IntSpan(t.BA).asString(), message + " diff B-A");
         }
     }
 }
