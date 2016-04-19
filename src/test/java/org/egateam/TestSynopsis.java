@@ -84,6 +84,7 @@ public class TestSynopsis {
 
         {
             IntSpan set = new IntSpan();
+            set.clear();
 
             IntSpan set1000 = new IntSpan(1000);
             ArrayList<Integer> ranges1000 = new ArrayList<Integer>(Arrays.asList(1000, 1000));
