@@ -81,7 +81,6 @@ public class IntSpan {
     private static final int posInf = 2147483647 - 1; // INT_MAX - 1
     private static final int negInf = -2147483648 + 1; // INT_MIN + 1
 
-    //
     private ArrayList<Integer> edges = new ArrayList<Integer>();
 
     //----------------------------------------------------------
@@ -124,7 +123,7 @@ public class IntSpan {
     }
 
     //----------------------------------------------------------
-    // Set contents
+    // Constants
     //----------------------------------------------------------
 
     /**
@@ -154,18 +153,55 @@ public class IntSpan {
         return emptyString;
     }
 
-    public ArrayList<Integer> edges() {
+    //----------------------------------------------------------
+    // Set contents
+    //----------------------------------------------------------
+
+    /**
+     * Clear all elements of this set.
+     *
+     * @return this set for method chaining
+     */
+    public IntSpan clear() {
+        edges = new ArrayList<Integer>();
+
+        return this;
+    }
+
+    /**
+     * Returns the internal used ArrayList representing the set.
+     * <p>
+     * I don't think you should use this method.
+     *
+     * @return the internal used ArrayList representing this set
+     */
+    private ArrayList<Integer> edges() {
         return edges;
     }
 
+    /**
+     * Returns the number of edges.
+     *
+     * @return the number of edges
+     */
     public int edgeSize() {
         return edges.size();
     }
 
+    /**
+     * Returns the number of spans.
+     *
+     * @return the number of spans
+     */
     public int spanSize() {
         return edgeSize() / 2;
     }
 
+    /**
+     * Returns a string representation of this set.
+     *
+     * @return a string representation of this set
+     */
     public String asString() {
         if ( isEmpty() ) {
             return emptyString;
@@ -194,6 +230,11 @@ public class IntSpan {
         return runlist;
     }
 
+    /**
+     * Returns an ArrayList containing all elements of this set in ascending order.
+     *
+     * @return an ArrayList containing all elements of this set in ascending order
+     */
     public ArrayList<Integer> asArray() {
         ArrayList<Integer> array = new ArrayList<Integer>();
         if ( isEmpty() ) {
@@ -213,6 +254,11 @@ public class IntSpan {
         return array;
     }
 
+    /**
+     * Returns the runs in this set, as a list of (lower, upper)
+     *
+     * @return the runs in this set, as a list of (lower, upper)
+     */
     public ArrayList<Integer> ranges() {
         ArrayList<Integer> ranges = new ArrayList<Integer>();
         if ( isEmpty() ) {
@@ -313,6 +359,59 @@ public class IntSpan {
      */
     public boolean isUniversal() {
         return edgeSize() == 2 && isNegInf() && isPosInf();
+    }
+
+    //----------------------------------------------------------
+    // Membership test
+    //----------------------------------------------------------
+
+    /**
+     * Returns <tt>true</tt> if this set contains all of the specified numbers.
+     *
+     * @param list the specified numbers
+     * @return <tt>true</tt> if this set contains all of the specified numbers
+     */
+    public boolean containsAll(ArrayList<Integer> list) {
+        for ( int i : list ) {
+            int pos = findPos(i + 1, 0);
+            if ( (pos & 1) != 1 ) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Returns <tt>true</tt> if this set contains the specified number.
+     *
+     * @param n the specified number
+     * @return <tt>true</tt> if this set contains the specified number
+     */
+    public boolean contains(int n) {
+        int pos = findPos(n + 1, 0);
+        if ( (pos & 1) == 1 ) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Returns <tt>true</tt> if this set contains any of the specified numbers.
+     *
+     * @param list the specified numbers
+     * @return <tt>true</tt> if this set contains any of the specified numbers
+     */
+    public boolean containsAny(ArrayList<Integer> list) {
+        for ( int i : list ) {
+            int pos = findPos(i + 1, 0);
+            if ( (pos & 1) == 1 ) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     //----------------------------------------------------------
