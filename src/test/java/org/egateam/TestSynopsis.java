@@ -9,6 +9,9 @@ package org.egateam;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 public class TestSynopsis {
 
     @Test
@@ -16,10 +19,27 @@ public class TestSynopsis {
         System.out.println("TestSynopsis");
     }
 
+    private void testConstructors(IntSpan set) {
+        System.out.println(set.asString()); // 1-3,5,7,9,100-999,1001-10000
+        String expected = "1-3,5,7,9,100-999,1001-10000";
+        Assert.assertEquals(set.asString(), expected);
+
+        Assert.assertFalse(set.isEmpty());
+        Assert.assertTrue(set.isNotEmpty());
+
+        Assert.assertFalse(set.isInfinite());
+        Assert.assertTrue(set.isFinite());
+        Assert.assertFalse(set.isPosInf());
+        Assert.assertFalse(set.isNegInf());
+        Assert.assertFalse(set.isInfinite());
+        Assert.assertFalse(set.isUniversal());
+    }
+
     @Test
     public void testSynopsis() {
 
-        { // snippet 1
+        // snippet 1
+        {
             IntSpan set = new IntSpan();
             for ( int i : new int[]{1, 2, 3, 5, 7, 9} ) {
                 set.add(i);
@@ -27,22 +47,42 @@ public class TestSynopsis {
             set.addPair(100, 10000);
             set.remove(1000);
 
-            System.out.println(set.asString()); // 1-3,5,7,9,100-999,1001-10000
-            String expected = "1-3,5,7,9,100-999,1001-10000";
-            Assert.assertEquals(set.asString(), expected);
-
-            Assert.assertFalse(set.isEmpty());
-            Assert.assertTrue(set.isNotEmpty());
-
-            Assert.assertFalse(set.isInfinite());
-            Assert.assertTrue(set.isFinite());
-            Assert.assertFalse(set.isPosInf());
-            Assert.assertFalse(set.isNegInf());
-            Assert.assertFalse(set.isInfinite());
-            Assert.assertFalse(set.isUniversal());
+            testConstructors(set);
         }
 
-        { // snippet 2
+        {
+            IntSpan set = new IntSpan();
+            set.add(new ArrayList<Integer>(Arrays.asList(1, 2, 3, 5, 7, 9)));
+            set.addPair(100, 10000);
+            set.remove(1000);
+
+            testConstructors(set);
+        }
+
+        {
+            IntSpan set = new IntSpan(new ArrayList<Integer>(Arrays.asList(1, 2, 3, 5, 7, 9)));
+            set.addPair(100, 10000);
+            set.remove(1000);
+
+            testConstructors(set);
+        }
+
+        {
+            IntSpan set = new IntSpan();
+            for ( int i : new int[]{1, 2, 3, 5, 7, 9} ) {
+                set.add(i);
+            }
+            set.addPair(100, 10000);
+            set.remove(1000);
+
+            IntSpan set2 = new IntSpan();
+            set2.add(set);
+
+            testConstructors(set2);
+        }
+
+        // snippet 2
+        {
             IntSpan infSet = new IntSpan().invert();
 
             System.out.println(infSet.asString());
@@ -60,7 +100,8 @@ public class TestSynopsis {
             Assert.assertTrue(infSet.isUniversal());
         }
 
-        { // snippet 3
+        // snippet 3
+        {
             IntSpan posInfSet = new IntSpan();
             posInfSet.addPair(1, posInfSet.posInf());
 

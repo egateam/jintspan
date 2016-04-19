@@ -9,6 +9,12 @@
  *      for (int i : new int[]{1, 2, 3, 5, 7, 9} ) {
  *          set.add(i);
  *      }
+ *
+ *      // or use ArrayList, that's faster
+ *      // set.add(new ArrayList<Integer>(Arrays.asList(1, 2, 3, 5, 7, 9)));
+ *      // or
+ *      // IntSpan set = new IntSpan(new ArrayList<Integer>(Arrays.asList(1, 2, 3, 5, 7, 9)));
+ *
  *      set.addPair(100, 10000);
  *      set.remove(1000);
  *      System.out.println(set.asString()); // 1-3,5,7,9,100-999,1001-10000
@@ -65,6 +71,7 @@
 package org.egateam;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class IntSpan {
     private static String emptyString = "-";
@@ -85,6 +92,11 @@ public class IntSpan {
 
     public IntSpan(int val) {
         addPair(val, val);
+    }
+
+    public IntSpan(ArrayList<Integer> list) {
+        ArrayList<Integer> ranges = listToRanges(list);
+        addRange(ranges);
     }
 
     public IntSpan(IntSpan supplied) {
@@ -321,6 +333,13 @@ public class IntSpan {
         return this;
     }
 
+    public IntSpan add(ArrayList<Integer> list) {
+        ArrayList<Integer> ranges = listToRanges(list);
+        addRange(ranges);
+
+        return this;
+    }
+
     public IntSpan add(IntSpan supplied) {
         merge(supplied);
 
@@ -393,6 +412,13 @@ public class IntSpan {
 
     public IntSpan remove(int n) {
         removePair(n, n);
+
+        return this;
+    }
+
+    public IntSpan remove(ArrayList<Integer> list) {
+        ArrayList<Integer> ranges = listToRanges(list);
+        removeRange(ranges);
 
         return this;
     }
@@ -563,6 +589,26 @@ public class IntSpan {
     // Private methods
     //----------------------------------------------------------
 
+    private ArrayList<Integer> listToRanges(ArrayList<Integer> list) {
+        Collections.sort(list);
+
+        ArrayList<Integer> ranges = new ArrayList<Integer>();
+        int count = list.size();
+        int pos = 0;
+
+        while ( pos < count ) {
+            int end = pos + 1;
+            while ( (end < count) && (list.get(end) <= list.get(end - 1) + 1) ) {
+                end++;
+            }
+            ranges.add(list.get(pos));
+            ranges.add(list.get(end - 1));
+            pos = end;
+        }
+
+        return ranges;
+    }
+
     private static String stripWhitespace(String string) {
         String result = "";
 
@@ -620,14 +666,18 @@ public class IntSpan {
         return ranges;
     }
 
-    /*
-    Return the index of the first element >= the supplied value.
-
-    If the supplied value is larger than any element in the list the returned
-    value will be equal to the size of the list.
-
-    If (pos & 1) == 1, i.e. pos is odd number, val is in the set
-    */
+    /**
+     * Return the index of the first element >= the supplied value.
+     * <p>
+     * If the supplied value is larger than any element in the list the returned value will be equal
+     * to the size of the list.
+     * <p>
+     * If (pos & 1) == 1, i.e. pos is odd number, val is in the set
+     *
+     * @param val supplied value
+     * @param low start value
+     * @return the index of the first element >= the supplied value.
+     */
     private int findPos(int val, int low) {
         int high = edgeSize();
 
