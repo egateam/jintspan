@@ -47,7 +47,7 @@ public class TestCreate {
 
     @Test
     public void prompt() {
-        System.out.println("Test creations");
+        System.out.println("TestCreations");
     }
 
     @Test

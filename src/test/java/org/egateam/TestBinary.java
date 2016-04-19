@@ -54,7 +54,7 @@ public class TestBinary {
 
     @Test
     public void prompt() {
-        System.out.println("Test binary ops");
+        System.out.println("TestBinaryOPs");
     }
 
     @Test

@@ -49,7 +49,7 @@ public class TestRelation {
 
     @Test
     public void prompt() {
-        System.out.println("Test relation");
+        System.out.println("TestRelations");
     }
 
     @Test

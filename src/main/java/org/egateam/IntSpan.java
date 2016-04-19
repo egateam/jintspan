@@ -350,10 +350,8 @@ public class IntSpan {
     public IntSpan add(String runlist) {
         runlist = stripWhitespace(runlist);
 
-        // empty set
-        if ( runlist.equals("") || runlist.equals(emptyString) ) {
-            // Do nothing
-        } else {
+        // skip empty set
+        if ( !runlist.equals("") && !runlist.equals(emptyString) ) {
             addRange(runlistToRanges(runlist));
         }
 
@@ -434,9 +432,7 @@ public class IntSpan {
         runlist = stripWhitespace(runlist);
 
         // empty set
-        if ( runlist.equals("") || runlist.equals(emptyString) ) {
-            // Do nothing
-        } else {
+        if ( !runlist.equals("") && !runlist.equals(emptyString) ) {
             removeRange(runlistToRanges(runlist));
         }
 
