@@ -66,6 +66,5 @@ public class TestMembership {
                 Assert.assertTrue(A.containsAll(A.remove(n).asArray()), message + " removed containsAll");
             }
         }
-
     }
 }
