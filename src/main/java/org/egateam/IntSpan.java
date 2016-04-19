@@ -10,7 +10,7 @@
  *          set.add(i);
  *      }
  *
- *      // or use ArrayList, that's faster
+ *      // or use ArrayList, that's faster but more trivial
  *      // set.add(new ArrayList<Integer>(Arrays.asList(1, 2, 3, 5, 7, 9)));
  *      // or
  *      // IntSpan set = new IntSpan(new ArrayList<Integer>(Arrays.asList(1, 2, 3, 5, 7, 9)));
@@ -88,22 +88,37 @@ public class IntSpan {
     // Constructors
     //----------------------------------------------------------
 
+    /**
+     * Constructs an empty set.
+     */
     public IntSpan() {
     }
 
+    /**
+     * Constructs a set with a single elements.
+     */
     public IntSpan(int val) {
         addPair(val, val);
     }
 
+    /**
+     * Constructs a set with all elements in ArrayList.
+     */
     public IntSpan(ArrayList<Integer> list) {
         ArrayList<Integer> ranges = listToRanges(list);
         addRange(ranges);
     }
 
+    /**
+     * Constructs a copy set of the supplied set.
+     */
     public IntSpan(IntSpan supplied) {
         edges = new ArrayList<Integer>(supplied.edges());
     }
 
+    /**
+     * Constructs a set from the runlist string.
+     */
     public IntSpan(String runlist) {
         add(runlist);
     }
@@ -112,16 +127,35 @@ public class IntSpan {
     // Set contents
     //----------------------------------------------------------
 
-    public ArrayList<Integer> edges() {
-        return edges;
-    }
-
+    /**
+     * Normally used in construction of infinite sets.
+     *
+     * @return positive infinity
+     */
     public int posInf() {
         return posInf - 1;
     }
 
+    /**
+     * Normally used in construction of infinite sets.
+     *
+     * @return negative infinity
+     */
     public int negInf() {
         return negInf;
+    }
+
+    /**
+     * Useless in common cases.
+     *
+     * @return emptyString "-"
+     */
+    public String emptyString() {
+        return emptyString;
+    }
+
+    public ArrayList<Integer> edges() {
+        return edges;
     }
 
     public int edgeSize() {
