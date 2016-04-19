@@ -24,3 +24,6 @@ buildNumber.properties
 
 # IDE
 .idea
+
+# coverage report
+cover/

@@ -81,6 +81,27 @@ public class TestSynopsis {
             testConstructors(set2);
         }
 
+        {
+            IntSpan set = new IntSpan();
+
+            IntSpan set1000 = new IntSpan(1000);
+            ArrayList<Integer> ranges1000 = new ArrayList<Integer>(Arrays.asList(1000, 1000, 1000));
+
+            set.addPair(1, 3).add(5).add(7).add(9).addPair(100, 10000)
+                .merge(set1000).subtract(set1000)
+                .add(7).remove(7)
+                .add("7").remove("7")
+                .add(1000).remove(1000)
+                .addRange(ranges1000).removeRange(ranges1000)
+                .addPair(1000, 1000).removePair(1000, 1000)
+                .add(ranges1000).remove(ranges1000)
+                .add("1000").remove("1000")
+                .add(set1000).remove(set1000)
+                .remove(1000);
+
+            testConstructors(set);
+        }
+
         // snippet 2
         {
             IntSpan infSet = new IntSpan().invert();

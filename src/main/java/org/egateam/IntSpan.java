@@ -73,12 +73,13 @@ package org.egateam;
 import java.util.ArrayList;
 import java.util.Collections;
 
+@SuppressWarnings("WeakerAccess")
 public class IntSpan {
-    private static String emptyString = "-";
+    private static final String emptyString = "-";
 
     // Real Largest int is posInf - 1
-    private static int posInf = 2147483647 - 1; // INT_MAX - 1
-    private static int negInf = -2147483648 + 1; // INT_MIN + 1
+    private static final int posInf = 2147483647 - 1; // INT_MAX - 1
+    private static final int negInf = -2147483648 + 1; // INT_MIN + 1
 
     //
     private ArrayList<Integer> edges = new ArrayList<Integer>();
@@ -236,9 +237,9 @@ public class IntSpan {
     }
 
     /**
-     * Returns <tt>true</tt> if this set is negtive infinite.
+     * Returns <tt>true</tt> if this set is negative infinite.
      *
-     * @return <tt>true</tt> if this set is negtive infinite
+     * @return <tt>true</tt> if this set is negative infinite
      */
     public boolean isNegInf() {
         return edges.get(0) == negInf;

@@ -13,6 +13,7 @@ import java.util.ArrayList;
 
 public class TestCreate {
 
+    @SuppressWarnings("CanBeFinal")
     private static class TestData {
         String input;
         String runlist;
@@ -25,7 +26,7 @@ public class TestCreate {
         }
     }
 
-    private static TestData[] tests =
+    private static final TestData[] tests =
         {
             new TestData("", "-", new int[]{}),
             new TestData("-", "-", new int[]{}),

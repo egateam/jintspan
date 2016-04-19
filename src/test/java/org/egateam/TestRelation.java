@@ -9,14 +9,15 @@ package org.egateam;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+@SuppressWarnings("CanBeFinal")
 public class TestRelation {
 
-    static String sets[] =
+    private static String[] sets =
         {
             "-", "1", "5", "1-5", "3-7", "1-3,8,10-23"
         };
 
-    static int[][] equals =
+    private static int[][] equals =
         {
             {1, 0, 0, 0, 0, 0},
             {0, 1, 0, 0, 0, 0},
@@ -26,7 +27,7 @@ public class TestRelation {
             {0, 0, 0, 0, 0, 1},
         };
 
-    static int[][] subset =
+    private static int[][] subset =
         {
             {1, 1, 1, 1, 1, 1},
             {0, 1, 0, 1, 0, 1},
@@ -36,7 +37,7 @@ public class TestRelation {
             {0, 0, 0, 0, 0, 1},
         };
 
-    static int[][] superset =
+    private static int[][] superset =
         {
             {1, 0, 0, 0, 0, 0},
             {1, 1, 0, 0, 0, 0},

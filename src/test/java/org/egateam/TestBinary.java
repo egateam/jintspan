@@ -9,10 +9,9 @@ package org.egateam;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import java.util.ArrayList;
-
 public class TestBinary {
 
+    @SuppressWarnings("CanBeFinal")
     private static class TestData {
         String A;
         String B;
@@ -39,7 +38,7 @@ public class TestBinary {
         }
     }
 
-    static TestData tests[] =
+    private static final TestData[] tests =
         {
             //            A             B        U           I        X            A-B     B-A
             new TestData("-         ", "-    ", "-       ", "-    ", "-        ", "-   ", "-    "),
