@@ -390,11 +390,7 @@ public class IntSpan {
      */
     public boolean contains(int n) {
         int pos = findPos(n + 1, 0);
-        if ( (pos & 1) == 1 ) {
-            return true;
-        } else {
-            return false;
-        }
+        return (pos & 1) == 1;
     }
 
     /**
@@ -418,6 +414,15 @@ public class IntSpan {
     // Member operations (mutate original set)
     //----------------------------------------------------------
 
+    /**
+     * Adds a pair of inclusive integers to this set.
+     * <p>
+     * A pair of integers constitute a range.
+     *
+     * @param lower lower boundary
+     * @param upper upper boundary ( upper must >= lower)
+     * @return this set for method chaining
+     */
     public IntSpan addPair(int lower, int upper) {
         upper++;
 
@@ -442,8 +447,16 @@ public class IntSpan {
         return this;
     }
 
+    /**
+     * Adds the inclusive range of integers to this set.
+     * <p>
+     * Multiple ranges may be specified. Each pair of integers constitute a range.
+     *
+     * @param ranges the inclusive ranges of integers (ranges.size() must be even)
+     * @return this set for method chaining
+     */
     public IntSpan addRange(ArrayList<Integer> ranges) {
-        assert (ranges.size() % 2 == 0) : "Number of ranges must be even: @ranges\n";
+        assert (ranges.size() % 2 == 0) : "Number of ranges must be even";
 
         while ( ranges.size() > 0 ) {
             int lower = ranges.remove(0);
@@ -454,6 +467,12 @@ public class IntSpan {
         return this;
     }
 
+    /**
+     * Merges the members of the supplied set into this set.
+     *
+     * @param supplied the supplied set
+     * @return this set for method chaining
+     */
     public IntSpan merge(IntSpan supplied) {
         ArrayList<Integer> ranges = supplied.ranges();
         addRange(ranges);
@@ -491,6 +510,17 @@ public class IntSpan {
         return this;
     }
 
+    /**
+     * Complement this set.
+     * <p>
+     * Because our notion of infinity is actually disappointingly finite inverting a finite set
+     * results in another finite set. For example inverting the empty set makes it contain all the
+     * integers between negInf and posInf inclusive.
+     * <p>
+     * As noted above negInf and posInf are actually just big integers.
+     *
+     * @return this set for method chaining
+     */
     public IntSpan invert() {
         if ( isEmpty() ) {
             // Universal set
@@ -517,6 +547,13 @@ public class IntSpan {
         return this;
     }
 
+    /**
+     * Removes a pair of inclusive integers from this set.
+     *
+     * @param lower lower boundary
+     * @param upper upper boundary ( upper must >= lower)
+     * @return this set for method chaining
+     */
     public IntSpan removePair(int lower, int upper) {
         invert();
         addPair(lower, upper);
@@ -525,8 +562,16 @@ public class IntSpan {
         return this;
     }
 
+    /**
+     * Removes the inclusive range of integers from this set.
+     * <p>
+     * Multiple ranges may be specified. Each pair of integers constitute a range.
+     *
+     * @param ranges the inclusive ranges of integers (ranges.size() must be even)
+     * @return this set for method chaining
+     */
     public IntSpan removeRange(ArrayList<Integer> ranges) {
-        assert (ranges.size() % 2 == 0) : "Number of ranges must be even: @ranges\n";
+        assert (ranges.size() % 2 == 0) : "Number of ranges must be even";
 
         invert();
         addRange(ranges);
@@ -535,6 +580,12 @@ public class IntSpan {
         return this;
     }
 
+    /**
+     * Subtracts the members of the supplied set out of this set.
+     *
+     * @param supplied the supplied set
+     * @return this set for method chaining
+     */
     public IntSpan subtract(IntSpan supplied) {
         ArrayList<Integer> ranges = supplied.ranges();
         removeRange(ranges);
@@ -672,6 +723,11 @@ public class IntSpan {
     // Set relations
     //----------------------------------------------------------
 
+    /**
+     * Returns <tt>true</tt> if this set and the supplied set contain the same elements.
+     *
+     * @return <tt>true</tt> if this set and the supplied set contain the same elements
+     */
     public boolean equals(IntSpan supplied) {
         ArrayList<Integer> edges_a = this.edges();
         ArrayList<Integer> edges_b = supplied.edges();
@@ -691,10 +747,20 @@ public class IntSpan {
         return true;
     }
 
+    /**
+     * Returns <tt>true</tt> if this set is a subset of the supplied set.
+     *
+     * @return <tt>true</tt> if this set is a subset of the supplied set
+     */
     public boolean subset(IntSpan supplied) {
         return this.diff(supplied).isEmpty();
     }
 
+    /**
+     * Returns <tt>true</tt> if this set is a superset of the supplied set.
+     *
+     * @return <tt>true</tt> if this set is a superset of the supplied set
+     */
     public boolean superset(IntSpan supplied) {
         return supplied.diff(this).isEmpty();
     }
@@ -703,9 +769,62 @@ public class IntSpan {
     // Indexing
     //----------------------------------------------------------
 
+    /*sub at {
+    my $self  = shift;
+    my $index = shift;
+    if ( $index == 0 || abs($index) > $self->cardinality ) {
+        return;
+    }
+    my $member = $index < 0 ? $self->_at_neg( -$index ) : $self->_at_pos($index);
+    return $member;
+}
+*/
+
+    /**
+     * Returns the indexth element of set, index start from "1".
+     * <p>
+     * Negtive indices count backwards from the end of the set.
+     * <p>
+     * Index can't be "0".
+     *
+     * @param index index in this set
+     * @return the indexth element of set
+     */
+    public int at(int index) {
+        assert isNotEmpty() : "Can't get indexing on an empty set";
+        assert Math.abs(index) >= 1 : "Index start from 1";
+        assert Math.abs(index) <= cardinality() : "Out of max index";
+
+        if ( index > 0 ) {
+            return atPos(index);
+        } else {
+            return atNeg(-index);
+        }
+    }
+
     //----------------------------------------------------------
     // Extrema
     //----------------------------------------------------------
+
+    /**
+     * Returns the smallest element of this set (can't be empty).
+     *
+     * @return the smallest element of this set
+     */
+    public int min() {
+        assert isNotEmpty();
+        return edges.get(0);
+    }
+
+    /**
+     * Returns the largest element of this set (can't be empty).
+     *
+     * @return the largest element of this set
+     */
+    public int max() {
+        assert isNotEmpty();
+        return edges.get(edges.size() - 1);
+    }
 
     //----------------------------------------------------------
     // Spans operations
@@ -823,6 +942,54 @@ public class IntSpan {
         }
 
         return low;
+    }
+
+    private int atPos(int index) {
+        assert isNotEmpty() : "Can't get indexing on an empty set";
+        assert index >= 1 : "Index start from 1";
+        assert index <= cardinality() : "Out of max index";
+
+        int member = min();
+        int countOfElementsBefore = 0;
+
+        for ( int i = 0; i < spanSize(); i++ ) {
+            int lower = edges.get(i * 2);
+            int upper = edges.get(i * 2 + 1) - 1;
+            int thisSpanSize = upper - lower + 1;
+
+            if ( index > countOfElementsBefore + thisSpanSize ) {
+                countOfElementsBefore += thisSpanSize;
+            } else {
+                member = index - countOfElementsBefore - 1 + lower;
+                break;
+            }
+        }
+
+        return member;
+    }
+
+    private int atNeg(int index) {
+        assert isNotEmpty() : "Can't get indexing on an empty set";
+        assert index >= 1 : "Index start from 1";
+        assert index <= cardinality() : "Out of max index";
+
+        int member = max();
+        int countOfElementsAfter = 0;
+
+        for ( int i = spanSize() - 1; i >= 0; i-- ) {
+            int lower = edges.get(i * 2);
+            int upper = edges.get(i * 2 + 1) - 1;
+            int thisSpanSize = upper - lower + 1;
+
+            if ( index > countOfElementsAfter + thisSpanSize ) {
+                countOfElementsAfter += thisSpanSize;
+            } else {
+                member = upper - (index - countOfElementsAfter) + 1;
+                break;
+            }
+        }
+
+        return member;
     }
 
     //----------------------------------------------------------
