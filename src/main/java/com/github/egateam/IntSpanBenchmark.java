@@ -18,7 +18,7 @@ public class IntSpanBenchmark {
                 long start = System.nanoTime();
                 testAddRange(i);
                 long end = System.nanoTime();
-                System.out.println(String.format("duration %f", (end - start) / 1000.0 / 1000.0 / 1000.0));
+                System.out.print(String.format("duration %f\n", (end - start) / 1000.0 / 1000.0 / 1000.0));
 
             }
         }
@@ -26,8 +26,19 @@ public class IntSpanBenchmark {
         void testAddRange(int step) {
             ArrayList<Integer> vec1 = new ArrayList<>();
 
-            for ( int i : new int[]{1, 30, 32, 149, 153, 155, 159, 247, 250, 250, 253, 464, 516, 518,
-                520, 523, 582, 585, 595, 600, 622, 1679} ) {
+            for ( int i : new int[]{
+                1, 30,
+                32, 149,
+                153, 155,
+                159, 247,
+                250, 250,
+                253, 464,
+                516, 518,
+                520, 523,
+                582, 585,
+                595, 600,
+                622, 1679
+            } ) {
                 vec1.add(i);
             }
 
