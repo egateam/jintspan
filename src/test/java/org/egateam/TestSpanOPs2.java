@@ -64,6 +64,8 @@ public class TestSpanOPs2 {
         }
 
         Assert.assertEquals(new IntSpan("1-3").pad(1).size(), 5, "Test pad");
-        Assert.assertEquals(new IntSpan("1-3").trim(1).size(), 1, "Test pad");
+        Assert.assertEquals(new IntSpan("1-3").pad(2).size(), 7, "Test pad");
+        Assert.assertEquals(new IntSpan("1-3").trim(1).size(), 1, "Test trim");
+        Assert.assertEquals(new IntSpan("1-3").trim(2).size(), 0, "Test trim");
     }
 }

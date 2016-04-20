@@ -94,8 +94,6 @@ public class TestCreate {
     @Test
     public void testCreationError() {
         {
-            String message = "Test error";
-
             try {
                 IntSpan set = new IntSpan(1, -1);
                 set.cardinality();
