@@ -76,7 +76,35 @@ public class TestSynopsis {
             set.addPair(100, 10000);
             set.remove(1000);
 
-            IntSpan set2 = new IntSpan(set.emptyString());
+            IntSpan set2 = new IntSpan(IntSpan.getEmptyString());
+            set2.add(set);
+
+            testConstructors(set2);
+        }
+
+        {
+            IntSpan set = new IntSpan(9);
+            for ( int i : new int[]{1, 2, 3, 5, 7} ) {
+                set.add(i);
+            }
+            set.addPair(100, 10000);
+            set.remove(1000);
+
+            IntSpan set2 = new IntSpan(IntSpan.getEmptyString());
+            set2.add(set);
+
+            testConstructors(set2);
+        }
+
+        {
+            IntSpan set = new IntSpan(1, 3);
+            for ( int i : new int[]{5, 7, 9} ) {
+                set.add(i);
+            }
+            set.addPair(100, 10000);
+            set.remove(1000);
+
+            IntSpan set2 = new IntSpan(IntSpan.getEmptyString());
             set2.add(set);
 
             testConstructors(set2);
@@ -89,7 +117,8 @@ public class TestSynopsis {
             IntSpan set1000 = new IntSpan(1000);
             ArrayList<Integer> ranges1000 = new ArrayList<Integer>(Arrays.asList(1000, 1000));
 
-            set.addPair(1, 3).add(5).add(7).add(9).addPair(100, 10000)
+            set.clear().
+                addPair(1, 3).add(5).add(7).add(9).addPair(100, 10000)
                 .merge(set1000).subtract(set1000)
                 .remove(7).add(7)
                 .remove("7").add("7")
@@ -109,7 +138,7 @@ public class TestSynopsis {
             IntSpan infSet = new IntSpan().invert();
 
             System.out.println(infSet.asString());
-            String expected = Integer.toString(infSet.negInf()) + "-" + Integer.toString(infSet.posInf());
+            String expected = Integer.toString(IntSpan.getNegInf()) + "-" + Integer.toString(IntSpan.getPosInf());
             Assert.assertEquals(infSet.asString(), expected);
 
             Assert.assertFalse(infSet.isEmpty());
@@ -126,10 +155,10 @@ public class TestSynopsis {
         // snippet 3
         {
             IntSpan posInfSet = new IntSpan();
-            posInfSet.addPair(1, posInfSet.posInf());
+            posInfSet.addPair(1, IntSpan.getPosInf());
 
             System.out.println(posInfSet.asString());
-            String expected = "1-" + Integer.toString(posInfSet.posInf());
+            String expected = "1-" + Integer.toString(IntSpan.getPosInf());
             Assert.assertEquals(posInfSet.asString(), expected);
 
             Assert.assertFalse(posInfSet.isEmpty());

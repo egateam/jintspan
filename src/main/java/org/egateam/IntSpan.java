@@ -49,7 +49,7 @@
  * (assuming you accept the slightly feeble definition of infinity we're using):
  * <pre>
  *     IntSpan posInfSet = new IntSpan();
- *     posInfSet.addPair(1, posInfSet.posInf());
+ *     posInfSet.addPair(1, IntSpan.getPosInf());
  * </pre>
  * <p>
  * This Java class is ported from the Perl module <tt>AlignDB::IntSpan</tt> which contains many
@@ -77,7 +77,7 @@ import java.util.Collections;
 public class IntSpan {
     private static final String emptyString = "-";
 
-    // Real Largest int is posInf - 1
+    // Real Largest int is getPosInf - 1
     private static final int posInf = 2147483647 - 1; // INT_MAX - 1
     private static final int negInf = -2147483648 + 1; // INT_MIN + 1
 
@@ -98,6 +98,16 @@ public class IntSpan {
      */
     public IntSpan(int val) {
         addPair(val, val);
+    }
+
+    /**
+     * Constructs a set with a pair of integers constituting a range.
+     *
+     * @param lower lower boundary
+     * @param upper upper boundary ( upper must >= lower)
+     */
+    public IntSpan(int lower, int upper) {
+        addPair(lower, upper);
     }
 
     /**
@@ -131,7 +141,7 @@ public class IntSpan {
      *
      * @return positive infinity
      */
-    public int posInf() {
+    public static int getPosInf() {
         return posInf - 1;
     }
 
@@ -140,16 +150,16 @@ public class IntSpan {
      *
      * @return negative infinity
      */
-    public int negInf() {
+    public static int getNegInf() {
         return negInf;
     }
 
     /**
      * Useless in common cases.
      *
-     * @return emptyString "-"
+     * @return empty string "-"
      */
-    public String emptyString() {
+    public static String getEmptyString() {
         return emptyString;
     }
 
@@ -1016,4 +1026,7 @@ public class IntSpan {
         return equals(supplied);
     }
 
+    public IntSpan intersection(IntSpan supplied) {
+        return intersect(supplied);
+    }
 }

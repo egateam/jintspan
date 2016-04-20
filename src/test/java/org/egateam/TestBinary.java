@@ -70,6 +70,7 @@ public class TestBinary {
 
             // intersect
             Assert.assertEquals(A.intersect(B).asString(), new IntSpan(t.I).asString(), message + " intersect");
+            Assert.assertEquals(A.intersection(B).asString(), new IntSpan(t.I).asString(), message + " intersection");
 
             // xor
             Assert.assertEquals(A.xor(B).asString(), new IntSpan(t.X).asString(), message + " xor");

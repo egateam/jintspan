@@ -89,6 +89,5 @@ public class TestCreate {
             Assert.assertEquals(set.asString(), expectedString, message);
             Assert.assertEquals(set.asArray(), expectedArray, message);
         }
-
     }
 }
