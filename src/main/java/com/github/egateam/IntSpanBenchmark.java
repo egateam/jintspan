@@ -13,6 +13,7 @@ public class IntSpanBenchmark {
     private static class RunBenchmark {
         void runBenchmark() {
             for ( int i : new int[]{2, 3, 4, 5, 6} ) {
+                System.out.print(String.format("step %d\n", i));
                 long start = System.nanoTime();
                 testAddRange(i);
                 long end = System.nanoTime();
@@ -62,7 +63,10 @@ public class IntSpanBenchmark {
         }
     }
 
-    // java -cp target/jintspan-0.1.1-SNAPSHOT.jar com.github.egateam.IntSpanBenchmark
+    /*
+    mvn clean verify
+    time java -jar target/jintspan-0.1.1-SNAPSHOT.jar
+     */
     public static void main(String[] arg) {
         RunBenchmark run = new RunBenchmark();
         run.runBenchmark();
