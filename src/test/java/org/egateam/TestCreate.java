@@ -90,4 +90,54 @@ public class TestCreate {
             Assert.assertEquals(set.asArray(), expectedArray, message);
         }
     }
+
+    @Test
+    public void testCreationError() {
+        {
+            String message = "Test error";
+
+            try {
+                IntSpan set = new IntSpan(1, -1);
+                set.cardinality();
+            } catch ( AssertionError err ) {
+                System.out.println(err.getMessage());
+                Assert.assertTrue(true, "Expected error");
+            } catch ( Throwable err ) {
+                Assert.assertTrue(false, "Doesn't catch error");
+            }
+
+            try {
+                IntSpan set = new IntSpan("1--1");
+                set.cardinality();
+            } catch ( AssertionError err ) {
+                System.out.println(err.getMessage());
+                Assert.assertTrue(true, "Expected error");
+            } catch ( Throwable err ) {
+                Assert.assertTrue(false, "Doesn't catch error");
+            }
+
+            try {
+                IntSpan set = new IntSpan("1-1--1");
+                set.cardinality();
+            } catch ( AssertionError err ) {
+                System.out.println(err.getMessage());
+                Assert.assertTrue(true, "Expected error");
+            } catch ( Throwable err ) {
+                Assert.assertTrue(false, "Doesn't catch error");
+            }
+
+            try {
+                IntSpan set = new IntSpan("abc");
+                set.cardinality();
+            } catch ( AssertionError err ) {
+                System.out.println(err.getMessage());
+                Assert.assertTrue(true, "Expected error");
+            } catch ( NumberFormatException err ) {
+                System.out.println(err.getMessage());
+                Assert.assertTrue(true, "Expected error");
+            } catch ( Throwable err ) {
+                Assert.assertTrue(false, "Doesn't catch error");
+            }
+        }
+    }
 }
