@@ -4,7 +4,7 @@
  * PARTICULAR PURPOSE OR NON-INFRINGEMENT, ARE HEREBY DISCLAIMED.
  */
 
-package org.egateam;
+package com.github.egateam;
 
 import org.testng.Assert;
 import org.testng.annotations.Test;

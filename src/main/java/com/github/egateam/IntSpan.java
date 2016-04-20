@@ -68,7 +68,7 @@
  * @since 1.6
  */
 
-package org.egateam;
+package com.github.egateam;
 
 import java.util.ArrayList;
 import java.util.Collections;
