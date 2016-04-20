@@ -46,25 +46,38 @@ public class TestMembership {
 
     @Test
     public void testMembership() {
+        boolean containsAll = true, containsAny = true;
         for ( int i = 0; i < sets.length; i++ ) {
             for ( int j = 0; j < sets.length; j++ ) {
                 String message = "Test " + i + " " + j;
 
                 int n = j + 1;
 
-                IntSpan A = new IntSpan(sets[i]);
+                IntSpan set = new IntSpan(sets[i]);
+                IntSpan setAdded = set.copy().add(n);
+                IntSpan setRemoved = set.copy().remove(n);
 
                 // contains
-                Assert.assertEquals(A.contains(n), contains[i][j] != 0, message + " contains");
+                Assert.assertEquals(set.contains(n), contains[i][j] != 0, message + " contains");
 
                 // added
-                Assert.assertEquals(A.add(n).asString(), new IntSpan(added[i][j]).asString(), message + " added");
-                Assert.assertTrue(A.containsAny(A.add(n).asArray()), message + " added containsAny");
+                Assert.assertEquals(setAdded.asString(), new IntSpan(added[i][j]).asString(), message + " added");
+                if ( set.isNotEmpty() ) {
+                    Assert.assertTrue(set.containsAny(setAdded.asArray()), message + " added containsAny");
+                }
+                containsAll = containsAll && set.containsAll(setAdded.asArray()); // shouldn't all be true
 
                 // removed
-                Assert.assertEquals(A.remove(n).asString(), new IntSpan(removed[i][j]).asString(), message + " removed");
-                Assert.assertTrue(A.containsAll(A.remove(n).asArray()), message + " removed containsAll");
+                Assert.assertEquals(setRemoved.asString(), new IntSpan(removed[i][j]).asString(), message + " removed");
+                Assert.assertTrue(set.containsAll(setRemoved.asArray()), message + " removed containsAll");
+                if ( set.isNotEmpty() && setRemoved.isNotEmpty() ) {
+                    containsAny = containsAny && set.containsAny(setRemoved.asArray()); // should all be true
+
+                }
             }
         }
+
+        Assert.assertFalse(containsAll);
+        Assert.assertTrue(containsAny);
     }
 }
