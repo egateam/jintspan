@@ -9,40 +9,49 @@ package org.egateam;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import java.util.ArrayList;
-
 public class TestIndex {
 
     @SuppressWarnings("CanBeFinal")
     private static class TestDataAt {
         String runlist;
         int index;
-        int expected;
+        Integer expected;
 
-        TestDataAt(String runlist, int index, int expected) {
+        TestDataAt(String runlist, int index, Integer expected) {
             this.runlist = runlist;
             this.index = index;
             this.expected = expected;
         }
     }
 
-    private static final TestDataAt[] testsAt =
+    private static final TestDataAt[] tests =
         {
-            new TestData("", "-", new int[]{}),
-            new TestData("-", "-", new int[]{}),
-            new TestData("     ", "-", new int[]{}),
-            new TestData("0", "0", new int[]{0}),
-            new TestData("1", "1", new int[]{1}),
-            new TestData("1-1", "1", new int[]{1}),
-            new TestData("-1", "-1", new int[]{-1}),
-            new TestData("1-2", "1-2", new int[]{1, 2}),
-            new TestData("-2--1", "-2--1", new int[]{-2, -1}),
-            new TestData("-2 -     -1  ", "-2--1", new int[]{-2, -1}),
-            new TestData("-2-1", "-2-1", new int[]{-2, -1, 0, 1}),
-            new TestData("1,2-4", "1-4", new int[]{1, 2, 3, 4}),
-            new TestData("1-3,4,5-7", "1-7", new int[]{1, 2, 3, 4, 5, 6, 7}),
-            new TestData("1-3,4", "1-4", new int[]{1, 2, 3, 4}),
-            new TestData("1,2,3,4,5,6,7", "1-7", new int[]{1, 2, 3, 4, 5, 6, 7}),
+            new TestDataAt("-", 1, null),
+            new TestDataAt("-", -1, null),
+            new TestDataAt("1-10,20-30", 25, null),
+            new TestDataAt("1-10,20-30", -25, null),
+
+            new TestDataAt("0-9", 1, 0),
+            new TestDataAt("0-9", 6, 5),
+            new TestDataAt("0-9", 10, 9),
+            new TestDataAt("0-9", 11, null),
+
+            new TestDataAt("0-9", -1, 9),
+            new TestDataAt("0-9", -5, 5),
+            new TestDataAt("0-9", -10, 0),
+            new TestDataAt("0-9", -11, null),
+
+            new TestDataAt("1-10,21-30,41-50", 6, 6),
+            new TestDataAt("1-10,21-30,41-50", 16, 26),
+            new TestDataAt("1-10,21-30,41-50", 26, 46),
+            new TestDataAt("1-10,21-30,41-50", 31, null),
+
+            new TestDataAt("1-10,21-30,41-50", -1, 50),
+            new TestDataAt("1-10,21-30,41-50", -11, 30),
+            new TestDataAt("1-10,21-30,41-50", -21, 10),
+            new TestDataAt("1-10,21-30,41-50", -30, 1),
+            new TestDataAt("1-10,21-30,41-50", -31, null),
+
         };
 
     @Test
@@ -53,42 +62,25 @@ public class TestIndex {
     @Test
     public void testCreationRunlist() {
 
-        for ( TestData t : tests ) {
-            ArrayList<Integer> array = new ArrayList<Integer>();
-            for ( int i : t.elements ) {
-                array.add(i);
+        for ( TestDataAt t : tests ) {
+
+            if ( t.expected != null ) {
+                String message = String.format("Test %s %d %d", t.runlist, t.index, t.expected);
+
+                IntSpan set = new IntSpan(t.runlist);
+                int expected = t.expected;
+                Assert.assertEquals(set.at(t.index), expected, message);
+            } else {
+                try {
+                    IntSpan set = new IntSpan(t.runlist);
+                    set.at(t.index);
+                } catch ( AssertionError err ) {
+                    System.out.println(err.getMessage());
+                    Assert.assertTrue(true, "Expected error");
+                } catch ( Throwable err ) {
+                    Assert.assertTrue(false, "Doesn't catch error");
+                }
             }
-            String message = "Test " + t.input;
-
-            IntSpan set = new IntSpan(t.input);
-            Assert.assertEquals(set.cardinality(), t.elements.length, message);
-            Assert.assertEquals(set.asString(), t.runlist, message);
-            Assert.assertEquals(set.asArray(), array, message);
-
-            // aliases
-            IntSpan set1 = new IntSpan(set.copy());
-            Assert.assertEquals(set.size(), t.elements.length, message);
-            Assert.assertEquals(set.count(), t.elements.length, message);
-            Assert.assertEquals(set1.runlist(), t.runlist, message);
-            Assert.assertEquals(set1.elements(), array, message);
         }
-    }
-
-    @Test
-    public void testCreationInt() {
-        {
-            String message = "Test int";
-
-            IntSpan set = new IntSpan(1);
-
-            String expectedString = "1";
-            ArrayList<Integer> expectedArray = new ArrayList<Integer>();
-            expectedArray.add(1);
-
-            Assert.assertEquals(set.cardinality(), 1, message);
-            Assert.assertEquals(set.asString(), expectedString, message);
-            Assert.assertEquals(set.asArray(), expectedArray, message);
-        }
-
     }
 }
