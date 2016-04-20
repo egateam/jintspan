@@ -72,7 +72,6 @@ public class TestMembership {
                 Assert.assertTrue(set.containsAll(setRemoved.asArray()), message + " removed containsAll");
                 if ( set.isNotEmpty() && setRemoved.isNotEmpty() ) {
                     containsAny = containsAny && set.containsAny(setRemoved.asArray()); // should all be true
-
                 }
             }
         }

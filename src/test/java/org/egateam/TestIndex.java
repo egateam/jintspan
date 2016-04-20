@@ -61,7 +61,7 @@ public class TestIndex {
     }
 
     @Test
-    public void testCreationRunlist() {
+    public void testIndex() {
 
         for ( TestData t : tests ) {
 
