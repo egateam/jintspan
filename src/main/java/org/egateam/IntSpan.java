@@ -777,44 +777,6 @@ public class IntSpan {
     }
 
     //----------------------------------------------------------
-    // Indexing
-    //----------------------------------------------------------
-
-    /*sub at {
-    my $self  = shift;
-    my $index = shift;
-    if ( $index == 0 || abs($index) > $self->cardinality ) {
-        return;
-    }
-    my $member = $index < 0 ? $self->_at_neg( -$index ) : $self->_at_pos($index);
-    return $member;
-}
-*/
-
-    /**
-     * Returns the (index)th element of set, index start from "1".
-     * <p>
-     * Negative indices count backwards from the end of the set.
-     * <p>
-     * Index can't be "0".
-     *
-     * @param index index in this set
-     * @return the (index)th element of set
-     * @throws AssertionError
-     */
-    public int at(int index) throws AssertionError {
-        if ( !isNotEmpty() ) throw new AssertionError("Can't get indexing on an empty set");
-        if ( Math.abs(index) < 1 ) throw new AssertionError("Index start from 1");
-        if ( Math.abs(index) > cardinality() ) throw new AssertionError("Out of max index");
-
-        if ( index > 0 ) {
-            return atPos(index);
-        } else {
-            return atNeg(-index);
-        }
-    }
-
-    //----------------------------------------------------------
     // Extrema
     //----------------------------------------------------------
 
@@ -838,6 +800,103 @@ public class IntSpan {
     public int max() throws AssertionError {
         if ( !isNotEmpty() ) throw new AssertionError();
         return edges.get(edges.size() - 1);
+    }
+
+    //----------------------------------------------------------
+    // Indexing
+    //----------------------------------------------------------
+
+    /**
+     * Returns the (index)th element of set, index start from "1".
+     * <p>
+     * Negative indices count backwards from the end of the set.
+     * <p>
+     * Index can't be "0".
+     *
+     * @param index index in this set
+     * @return the (index)th element of set
+     * @throws AssertionError
+     */
+    public int at(int index) throws AssertionError {
+        if ( isEmpty() ) throw new AssertionError("Indexing on an empty set");
+        if ( Math.abs(index) < 1 ) throw new AssertionError("Index start from 1");
+        if ( Math.abs(index) > cardinality() ) throw new AssertionError("Out of max index");
+
+        if ( index > 0 ) {
+            return atPos(index);
+        } else {
+            return atNeg(-index);
+        }
+    }
+
+    private int atPos(int index) {
+        int element = min();
+        int countOfElementsBefore = 0;
+
+        for ( int i = 0; i < spanSize(); i++ ) {
+            int lower = edges.get(i * 2);
+            int upper = edges.get(i * 2 + 1) - 1;
+            int thisSpanSize = upper - lower + 1;
+
+            if ( index > countOfElementsBefore + thisSpanSize ) {
+                countOfElementsBefore += thisSpanSize;
+            } else {
+                element = index - countOfElementsBefore - 1 + lower;
+                break;
+            }
+        }
+
+        return element;
+    }
+
+    private int atNeg(int index) {
+        int element = max();
+        int countOfElementsAfter = 0;
+
+        for ( int i = spanSize() - 1; i >= 0; i-- ) {
+            int lower = edges.get(i * 2);
+            int upper = edges.get(i * 2 + 1) - 1;
+            int thisSpanSize = upper - lower + 1;
+
+            if ( index > countOfElementsAfter + thisSpanSize ) {
+                countOfElementsAfter += thisSpanSize;
+            } else {
+                element = upper - (index - countOfElementsAfter) + 1;
+                break;
+            }
+        }
+
+        return element;
+    }
+
+    /**
+     * Returns the index of an element in this set, index start from "1"
+     *
+     * @param element the element
+     * @return the index of an element in this set
+     * @throws AssertionError
+     */
+    public int index(int element) throws AssertionError {
+        if ( isEmpty() ) throw new AssertionError("Indexing on an empty set");
+        if ( !contains(element) ) throw new AssertionError("Element doesn't exist");
+
+        int index = -1; // not valid
+        int countOfElementsBefore = 0;
+
+
+        for ( int i = 0; i < spanSize(); i++ ) {
+            int lower = edges.get(i * 2);
+            int upper = edges.get(i * 2 + 1) - 1;
+            int thisSpanSize = upper - lower + 1;
+
+            if ( element >= lower && element <= upper ) {
+                index = element - lower + 1 + countOfElementsBefore;
+            } else {
+                countOfElementsBefore += thisSpanSize;
+            }
+        }
+
+        return index;
     }
 
     //----------------------------------------------------------
@@ -956,46 +1015,6 @@ public class IntSpan {
         }
 
         return low;
-    }
-
-    private int atPos(int index) {
-        int member = min();
-        int countOfElementsBefore = 0;
-
-        for ( int i = 0; i < spanSize(); i++ ) {
-            int lower = edges.get(i * 2);
-            int upper = edges.get(i * 2 + 1) - 1;
-            int thisSpanSize = upper - lower + 1;
-
-            if ( index > countOfElementsBefore + thisSpanSize ) {
-                countOfElementsBefore += thisSpanSize;
-            } else {
-                member = index - countOfElementsBefore - 1 + lower;
-                break;
-            }
-        }
-
-        return member;
-    }
-
-    private int atNeg(int index) {
-        int member = max();
-        int countOfElementsAfter = 0;
-
-        for ( int i = spanSize() - 1; i >= 0; i-- ) {
-            int lower = edges.get(i * 2);
-            int upper = edges.get(i * 2 + 1) - 1;
-            int thisSpanSize = upper - lower + 1;
-
-            if ( index > countOfElementsAfter + thisSpanSize ) {
-                countOfElementsAfter += thisSpanSize;
-            } else {
-                member = upper - (index - countOfElementsAfter) + 1;
-                break;
-            }
-        }
-
-        return member;
     }
 
     //----------------------------------------------------------

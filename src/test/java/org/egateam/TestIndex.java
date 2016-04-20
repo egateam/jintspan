@@ -12,46 +12,47 @@ import org.testng.annotations.Test;
 public class TestIndex {
 
     @SuppressWarnings("CanBeFinal")
-    private static class TestDataAt {
+    private static class TestData {
         String runlist;
-        int index;
-        Integer expected;
+        int number;
+        Integer expIndex;
+        Integer expElement;
 
-        TestDataAt(String runlist, int index, Integer expected) {
+        TestData(String runlist, int number, Integer expIndex, Integer expElement) {
             this.runlist = runlist;
-            this.index = index;
-            this.expected = expected;
+            this.number = number;
+            this.expIndex = expIndex;
+            this.expElement = expElement;
         }
     }
 
-    private static final TestDataAt[] tests =
+    private static final TestData[] tests =
         {
-            new TestDataAt("-", 1, null),
-            new TestDataAt("-", -1, null),
-            new TestDataAt("1-10,20-30", 25, null),
-            new TestDataAt("1-10,20-30", -25, null),
+            new TestData("-", 1, null, null),
+            new TestData("-", -1, null, null),
+            new TestData("1-10,21-30", 25, null, 15),
+            new TestData("1-10,21-30", -25, null, null),
 
-            new TestDataAt("0-9", 1, 0),
-            new TestDataAt("0-9", 6, 5),
-            new TestDataAt("0-9", 10, 9),
-            new TestDataAt("0-9", 11, null),
+            new TestData("0-9", 1, 0, 2),
+            new TestData("0-9", 6, 5, 7),
+            new TestData("0-9", 10, 9, null),
+            new TestData("0-9", 11, null, null),
 
-            new TestDataAt("0-9", -1, 9),
-            new TestDataAt("0-9", -5, 5),
-            new TestDataAt("0-9", -10, 0),
-            new TestDataAt("0-9", -11, null),
+            new TestData("0-9", -1, 9, null),
+            new TestData("0-9", -5, 5, null),
+            new TestData("0-9", -10, 0, null),
+            new TestData("0-9", -11, null, null),
 
-            new TestDataAt("1-10,21-30,41-50", 6, 6),
-            new TestDataAt("1-10,21-30,41-50", 16, 26),
-            new TestDataAt("1-10,21-30,41-50", 26, 46),
-            new TestDataAt("1-10,21-30,41-50", 31, null),
+            new TestData("1-10,21-30,41-50", 6, 6, 6),
+            new TestData("1-10,21-30,41-50", 16, 26, null),
+            new TestData("1-10,21-30,41-50", 26, 46, 16),
+            new TestData("1-10,21-30,41-50", 31, null, null),
 
-            new TestDataAt("1-10,21-30,41-50", -1, 50),
-            new TestDataAt("1-10,21-30,41-50", -11, 30),
-            new TestDataAt("1-10,21-30,41-50", -21, 10),
-            new TestDataAt("1-10,21-30,41-50", -30, 1),
-            new TestDataAt("1-10,21-30,41-50", -31, null),
-
+            new TestData("1-10,21-30,41-50", -1, 50, null),
+            new TestData("1-10,21-30,41-50", -11, 30, null),
+            new TestData("1-10,21-30,41-50", -21, 10, null),
+            new TestData("1-10,21-30,41-50", -30, 1, null),
+            new TestData("1-10,21-30,41-50", -31, null, null),
         };
 
     @Test
@@ -62,18 +63,18 @@ public class TestIndex {
     @Test
     public void testCreationRunlist() {
 
-        for ( TestDataAt t : tests ) {
+        for ( TestData t : tests ) {
 
-            if ( t.expected != null ) {
-                String message = String.format("Test %s %d %d", t.runlist, t.index, t.expected);
+            if ( t.expIndex != null ) {
+                String message = String.format("Test at %s %d %d", t.runlist, t.number, t.expIndex);
 
                 IntSpan set = new IntSpan(t.runlist);
-                int expected = t.expected;
-                Assert.assertEquals(set.at(t.index), expected, message);
+                int expected = t.expIndex;
+                Assert.assertEquals(set.at(t.number), expected, message);
             } else {
                 try {
                     IntSpan set = new IntSpan(t.runlist);
-                    set.at(t.index);
+                    set.at(t.number);
                 } catch ( AssertionError err ) {
                     System.out.println(err.getMessage());
                     Assert.assertTrue(true, "Expected error");
@@ -81,6 +82,24 @@ public class TestIndex {
                     Assert.assertTrue(false, "Doesn't catch error");
                 }
             }
+
+            if ( t.expElement != null ) {
+                String message = String.format("Test index %s %d %d", t.runlist, t.number, t.expElement);
+                IntSpan set = new IntSpan(t.runlist);
+                int expected = t.expElement;
+                Assert.assertEquals(set.index(t.number), expected, message);
+            } else {
+                try {
+                    IntSpan set = new IntSpan(t.runlist);
+                    set.index(t.number);
+                } catch ( AssertionError err ) {
+                    System.out.println(err.getMessage());
+                    Assert.assertTrue(true, "Expected error");
+                } catch ( Throwable err ) {
+                    Assert.assertTrue(false, "Doesn't catch error");
+                }
+            }
+
         }
     }
 }
