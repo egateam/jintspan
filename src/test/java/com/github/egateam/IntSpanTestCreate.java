@@ -54,7 +54,7 @@ public class IntSpanTestCreate {
     public void testCreationRunlist() {
 
         for ( TestData t : tests ) {
-            ArrayList<Integer> array = new ArrayList<Integer>();
+            ArrayList<Integer> array = new ArrayList<>();
             for ( int i : t.elements ) {
                 array.add(i);
             }
@@ -82,7 +82,7 @@ public class IntSpanTestCreate {
             IntSpan set = new IntSpan(1);
 
             String expectedString = "1";
-            ArrayList<Integer> expectedArray = new ArrayList<Integer>();
+            ArrayList<Integer> expectedArray = new ArrayList<>();
             expectedArray.add(1);
 
             Assert.assertEquals(set.cardinality(), 1, message);
@@ -132,7 +132,7 @@ public class IntSpanTestCreate {
                 Assert.assertTrue(true, "Expected error");
             } catch ( NumberFormatException err ) {
                 System.out.println(err.getMessage());
-                Assert.assertTrue(true, "Expected error");
+                Assert.assertTrue(true, "Expected parseInt error");
             } catch ( Throwable err ) {
                 Assert.assertTrue(false, "Doesn't catch error");
             }

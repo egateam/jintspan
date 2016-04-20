@@ -8,6 +8,7 @@ package com.github.egateam;
 
 import java.util.ArrayList;
 
+@SuppressWarnings("WeakerAccess")
 public class IntSpanBenchmark {
 
     private static class RunBenchmark {

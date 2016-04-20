@@ -82,7 +82,7 @@ public class IntSpan {
     private static final int posInf = 2147483647 - 1; // INT_MAX - 1
     private static final int negInf = -2147483648 + 1; // INT_MIN + 1
 
-    private ArrayList<Integer> edges = new ArrayList<Integer>();
+    private ArrayList<Integer> edges = new ArrayList<>();
 
     //----------------------------------------------------------
     // Constructors
@@ -123,7 +123,7 @@ public class IntSpan {
      * Constructs a copy set of the supplied set.
      */
     public IntSpan(IntSpan supplied) {
-        edges = new ArrayList<Integer>(supplied.getEdges());
+        edges = new ArrayList<>(supplied.getEdges());
     }
 
     /**
@@ -174,7 +174,7 @@ public class IntSpan {
      * @return this set for method chaining
      */
     public IntSpan clear() {
-        edges = new ArrayList<Integer>();
+        edges = new ArrayList<>();
 
         return this;
     }
@@ -247,7 +247,7 @@ public class IntSpan {
      * @return an ArrayList containing all elements of this set in ascending order
      */
     public ArrayList<Integer> asArray() {
-        ArrayList<Integer> array = new ArrayList<Integer>();
+        ArrayList<Integer> array = new ArrayList<>();
         if ( isEmpty() ) {
             return array;
         }
@@ -271,7 +271,7 @@ public class IntSpan {
      * @return the runs in this set, as a list of (lower, upper)
      */
     public ArrayList<Integer> ranges() {
-        ArrayList<Integer> ranges = new ArrayList<Integer>();
+        ArrayList<Integer> ranges = new ArrayList<>();
         if ( isEmpty() ) {
             return ranges;
         }
@@ -536,7 +536,7 @@ public class IntSpan {
     public IntSpan invert() {
         if ( isEmpty() ) {
             // Universal set
-            edges = new ArrayList<Integer>();
+            edges = new ArrayList<>();
             edges.add(negInf);
             edges.add(posInf);
         } else {
@@ -648,7 +648,7 @@ public class IntSpan {
     public IntSpan copy() {
         IntSpan newSet = new IntSpan();
 
-        newSet.edges = new ArrayList<Integer>(edges);
+        newSet.edges = new ArrayList<>(edges);
 
         return newSet;
     }
@@ -1062,7 +1062,7 @@ public class IntSpan {
     private ArrayList<Integer> listToRanges(ArrayList<Integer> list) {
         Collections.sort(list);
 
-        ArrayList<Integer> ranges = new ArrayList<Integer>();
+        ArrayList<Integer> ranges = new ArrayList<>();
         int count = list.size();
         int pos = 0;
 
@@ -1091,7 +1091,7 @@ public class IntSpan {
     }
 
     private ArrayList<Integer> runlistToRanges(String runlist) throws AssertionError {
-        ArrayList<Integer> ranges = new ArrayList<Integer>();
+        ArrayList<Integer> ranges = new ArrayList<>();
 
         String[] str = runlist.split(",");
         for ( String s : str ) {
@@ -1099,7 +1099,7 @@ public class IntSpan {
             boolean upperIsNeg = s.contains("--");
 
             String[] str2 = s.split("-");
-            ArrayList<Integer> range = new ArrayList<Integer>();
+            ArrayList<Integer> range = new ArrayList<>();
             for ( String s2 : str2 ) {
                 if ( !s2.equals("") ) {
                     range.add(Integer.parseInt(s2));

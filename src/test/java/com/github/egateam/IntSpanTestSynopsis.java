@@ -53,7 +53,7 @@ public class IntSpanTestSynopsis {
 
         {
             IntSpan set = new IntSpan();
-            set.add(new ArrayList<Integer>(Arrays.asList(1, 2, 3, 5, 7, 9)));
+            set.add(new ArrayList<>(Arrays.asList(1, 2, 3, 5, 7, 9)));
             set.addPair(100, 10000);
             set.remove(1000);
 
@@ -61,7 +61,7 @@ public class IntSpanTestSynopsis {
         }
 
         {
-            IntSpan set = new IntSpan(new ArrayList<Integer>(Arrays.asList(1, 2, 3, 5, 7, 9)));
+            IntSpan set = new IntSpan(new ArrayList<>(Arrays.asList(1, 2, 3, 5, 7, 9)));
             set.addPair(100, 10000);
             set.remove(1000);
 
@@ -117,7 +117,7 @@ public class IntSpanTestSynopsis {
             set.clear();
 
             IntSpan set1000 = new IntSpan(1000);
-            ArrayList<Integer> ranges1000 = new ArrayList<Integer>(Arrays.asList(1000, 1000));
+            ArrayList<Integer> ranges1000 = new ArrayList<>(Arrays.asList(1000, 1000));
 
             set.clear().
                 addPair(1, 3).add(5).add(7).add(9).addPair(100, 10000)
