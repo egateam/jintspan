@@ -70,7 +70,6 @@
 
 package org.egateam;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -123,7 +122,7 @@ public class IntSpan {
      * Constructs a copy set of the supplied set.
      */
     public IntSpan(IntSpan supplied) {
-        edges = new ArrayList<Integer>(supplied.edges());
+        edges = new ArrayList<Integer>(supplied.getEdges());
     }
 
     /**
@@ -186,14 +185,14 @@ public class IntSpan {
      *
      * @return the internal used ArrayList representing this set
      */
-    private ArrayList<Integer> edges() {
+    private ArrayList<Integer> getEdges() {
         return edges;
     }
 
     /**
-     * Returns the number of edges.
+     * Returns the number of getEdges.
      *
-     * @return the number of edges
+     * @return the number of getEdges
      */
     public int edgeSize() {
         return edges.size();
@@ -741,8 +740,8 @@ public class IntSpan {
      * @return <tt>true</tt> if this set and the supplied set contain the same elements
      */
     public boolean equals(IntSpan supplied) {
-        ArrayList<Integer> edges_a = this.edges();
-        ArrayList<Integer> edges_b = supplied.edges();
+        ArrayList<Integer> edges_a = this.getEdges();
+        ArrayList<Integer> edges_b = supplied.getEdges();
 
         if ( edges_a.size() != edges_b.size() ) {
             return false;
@@ -949,6 +948,56 @@ public class IntSpan {
         }
     }
 
+    /**
+     * Returns a set constructed by removing n integers from each end of each span of this set. If
+     * n is negative, then -n integers are added to each end of each span.
+     * <p>
+     * In the first case, spans may vanish from this set; in the second case, holes may vanish.
+     *
+     * @param n integer
+     * @return a set constructed by removing n integers from each end of each span of this set
+     */
+    public IntSpan inset(int n) {
+        IntSpan newSet = new IntSpan();
+
+        for ( int i = 0; i < spanSize(); i++ ) {
+            int lower = edges.get(i * 2);
+            int upper = edges.get(i * 2 + 1) - 1;
+
+            if ( lower != getNegInf() ) {
+                lower += n;
+            }
+            if ( upper != getPosInf() ) {
+                upper -= n;
+            }
+
+            if ( lower <= upper ) {
+                newSet.addPair(lower, upper);
+            }
+        }
+
+        return newSet;
+    }
+
+    /**
+     * trim is provided as a synonym for inset.
+     *
+     * @param n integer
+     * @return a set
+     */
+    public IntSpan trim(int n) {
+        return inset(n);
+    }
+
+    /**
+     * set.pad(n) is the same as set.inset(-n).
+     *
+     * @param n integer
+     * @return a set
+     */
+    public IntSpan pad(int n) {
+        return inset(-n);
+    }
 
     //----------------------------------------------------------
     // Islands

@@ -37,7 +37,7 @@ public class TestSpanOPs {
 
     @Test
     public void prompt() {
-        System.out.println("TestIndex");
+        System.out.println("TestSpanOPs");
     }
 
     @Test
@@ -50,7 +50,7 @@ public class TestSpanOPs {
 
             Assert.assertEquals(new IntSpan(t.runlist).holes().asString(), new IntSpan(t.expHoles).asString(),
                 String.format("Test holes %s %s", t.runlist, t.expHoles));
-            
+
         }
     }
 }
