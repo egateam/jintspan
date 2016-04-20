@@ -792,14 +792,14 @@ public class IntSpan {
 */
 
     /**
-     * Returns the indexth element of set, index start from "1".
+     * Returns the (index)th element of set, index start from "1".
      * <p>
-     * Negtive indices count backwards from the end of the set.
+     * Negative indices count backwards from the end of the set.
      * <p>
      * Index can't be "0".
      *
      * @param index index in this set
-     * @return the indexth element of set
+     * @return the (index)th element of set
      * @throws AssertionError
      */
     public int at(int index) throws AssertionError {
@@ -899,7 +899,7 @@ public class IntSpan {
                 }
             }
 
-            int lower = 1, upper = -1; // variables need be initialized
+            int lower, upper;
 
             if ( range.size() == 1 ) {
                 lower = range.get(0);
