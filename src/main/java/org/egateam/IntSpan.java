@@ -999,6 +999,53 @@ public class IntSpan {
         return inset(-n);
     }
 
+    /**
+     * Removes all spans within this <strong>smaller than</strong> minLength
+     *
+     * @param minLength integer
+     * @return a new set
+     */
+    public IntSpan excise(int minLength) {
+        IntSpan newSet = new IntSpan();
+
+        for ( int i = 0; i < spanSize(); i++ ) {
+            int lower = edges.get(i * 2);
+            int upper = edges.get(i * 2 + 1) - 1;
+            int thisSpanSize = upper - lower + 1;
+
+            if ( thisSpanSize >= minLength ) {
+                newSet.addPair(lower, upper);
+            }
+        }
+
+        return newSet;
+    }
+
+    /**
+     * Fills in all holes in this set <strong>smaller than or equals to </strong> maxLength
+     *
+     * @param maxLength integer
+     * @return a new set
+     */
+    public IntSpan fill(int maxLength) {
+        IntSpan newSet = copy();
+
+        IntSpan holesSet = holes();
+        ArrayList<Integer> holesEdges = holesSet.getEdges();
+
+        for ( int i = 0; i < holesSet.spanSize(); i++ ) {
+            int lower = holesEdges.get(i * 2);
+            int upper = holesEdges.get(i * 2 + 1) - 1;
+            int thisSpanSize = upper - lower + 1;
+
+            if ( thisSpanSize <= maxLength ) {
+                newSet.addPair(lower, upper);
+            }
+        }
+
+        return newSet;
+    }
+
     //----------------------------------------------------------
     // Islands
     //----------------------------------------------------------

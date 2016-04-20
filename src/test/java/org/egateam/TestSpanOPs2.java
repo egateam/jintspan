@@ -52,7 +52,7 @@ public class TestSpanOPs2 {
 
     @Test
     public void prompt() {
-        System.out.println("TestSpanOPs2");
+        System.out.println("TestSpanOPs inset pad trim");
     }
 
     @Test
