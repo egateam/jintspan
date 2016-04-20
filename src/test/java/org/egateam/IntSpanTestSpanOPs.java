@@ -9,7 +9,7 @@ package org.egateam;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-public class TestSpanOPs {
+public class IntSpanTestSpanOPs {
 
     @SuppressWarnings("CanBeFinal")
     private static class TestData {

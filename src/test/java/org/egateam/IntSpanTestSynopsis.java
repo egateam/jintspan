@@ -12,7 +12,7 @@ import org.testng.annotations.Test;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class TestSynopsis {
+public class IntSpanTestSynopsis {
 
     @Test
     public void prompt() {
