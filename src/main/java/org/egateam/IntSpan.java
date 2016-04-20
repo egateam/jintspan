@@ -433,10 +433,11 @@ public class IntSpan {
      * @param upper upper boundary ( upper must >= lower)
      * @return this set for method chaining
      */
-    public IntSpan addPair(int lower, int upper) {
+    public IntSpan addPair(int lower, int upper) throws AssertionError {
         upper++;
 
-        assert (lower <= upper) : "Bad order: " + Integer.toString(lower) + "," + Integer.toString(upper);
+        if ( lower > upper )
+            throw new AssertionError(String.format("Bad order: %s,%s", Integer.toString(lower), Integer.toString(upper)));
 
         int lowerPos = findPos(lower, 0);
         int upperPos = findPos(upper + 1, lowerPos);
@@ -465,8 +466,8 @@ public class IntSpan {
      * @param ranges the inclusive ranges of integers (ranges.size() must be even)
      * @return this set for method chaining
      */
-    public IntSpan addRange(ArrayList<Integer> ranges) {
-        assert (ranges.size() % 2 == 0) : "Number of ranges must be even";
+    public IntSpan addRange(ArrayList<Integer> ranges) throws AssertionError {
+        if ( ranges.size() % 2 != 0 ) throw new AssertionError("Number of ranges must be even");
 
         while ( ranges.size() > 0 ) {
             int lower = ranges.remove(0);
@@ -580,8 +581,8 @@ public class IntSpan {
      * @param ranges the inclusive ranges of integers (ranges.size() must be even)
      * @return this set for method chaining
      */
-    public IntSpan removeRange(ArrayList<Integer> ranges) {
-        assert (ranges.size() % 2 == 0) : "Number of ranges must be even";
+    public IntSpan removeRange(ArrayList<Integer> ranges) throws AssertionError {
+        if ( ranges.size() % 2 != 0 ) throw new AssertionError("Number of ranges must be even");
 
         invert();
         addRange(ranges);
@@ -799,11 +800,12 @@ public class IntSpan {
      *
      * @param index index in this set
      * @return the indexth element of set
+     * @throws AssertionError
      */
-    public int at(int index) {
-        assert isNotEmpty() : "Can't get indexing on an empty set";
-        assert Math.abs(index) >= 1 : "Index start from 1";
-        assert Math.abs(index) <= cardinality() : "Out of max index";
+    public int at(int index) throws AssertionError {
+        if ( !isNotEmpty() ) throw new AssertionError("Can't get indexing on an empty set");
+        if ( Math.abs(index) < 1 ) throw new AssertionError("Index start from 1");
+        if ( Math.abs(index) > cardinality() ) throw new AssertionError("Out of max index");
 
         if ( index > 0 ) {
             return atPos(index);
@@ -820,9 +822,10 @@ public class IntSpan {
      * Returns the smallest element of this set (can't be empty).
      *
      * @return the smallest element of this set
+     * @throws AssertionError
      */
-    public int min() {
-        assert isNotEmpty();
+    public int min() throws AssertionError {
+        if ( !isNotEmpty() ) throw new AssertionError();
         return edges.get(0);
     }
 
@@ -830,9 +833,10 @@ public class IntSpan {
      * Returns the largest element of this set (can't be empty).
      *
      * @return the largest element of this set
+     * @throws AssertionError
      */
-    public int max() {
-        assert isNotEmpty();
+    public int max() throws AssertionError {
+        if ( !isNotEmpty() ) throw new AssertionError();
         return edges.get(edges.size() - 1);
     }
 
@@ -879,7 +883,7 @@ public class IntSpan {
         return result;
     }
 
-    private ArrayList<Integer> runlistToRanges(String runlist) {
+    private ArrayList<Integer> runlistToRanges(String runlist) throws AssertionError {
         ArrayList<Integer> ranges = new ArrayList<Integer>();
 
         String[] str = runlist.split(",");
@@ -914,10 +918,10 @@ public class IntSpan {
                     upper = -upper;
                 }
             } else {
-                assert false : "Single run errors [" + s + "]. Size of tokens is " + range.size();
+                throw new AssertionError(String.format("Single run errors [%s]. Size of tokens is %d", s, range.size()));
             }
 
-            assert (lower <= upper) : "Bad order [" + s + "]";
+            if ( lower > upper ) throw new AssertionError(String.format("Bad order [%s]", s));
             ranges.add(lower);
             ranges.add(upper);
         }
@@ -955,10 +959,6 @@ public class IntSpan {
     }
 
     private int atPos(int index) {
-        assert isNotEmpty() : "Can't get indexing on an empty set";
-        assert index >= 1 : "Index start from 1";
-        assert index <= cardinality() : "Out of max index";
-
         int member = min();
         int countOfElementsBefore = 0;
 
@@ -979,10 +979,6 @@ public class IntSpan {
     }
 
     private int atNeg(int index) {
-        assert isNotEmpty() : "Can't get indexing on an empty set";
-        assert index >= 1 : "Index start from 1";
-        assert index <= cardinality() : "Out of max index";
-
         int member = max();
         int countOfElementsAfter = 0;
 
