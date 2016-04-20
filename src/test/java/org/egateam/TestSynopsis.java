@@ -83,8 +83,8 @@ public class TestSynopsis {
         }
 
         {
-            IntSpan set = new IntSpan(9);
-            for ( int i : new int[]{1, 2, 3, 5, 7} ) {
+            IntSpan set = new IntSpan(-10, 1).clear();
+            for ( int i : new int[]{1, 2, 3, 5, 7, 9} ) {
                 set.add(i);
             }
             set.addPair(100, 10000);
@@ -97,8 +97,10 @@ public class TestSynopsis {
         }
 
         {
-            IntSpan set = new IntSpan(1, 3);
-            for ( int i : new int[]{5, 7, 9} ) {
+            IntSpan set = new IntSpan(1, 10);
+            set.clear();
+
+            for ( int i : new int[]{1, 2, 3, 5, 7, 9} ) {
                 set.add(i);
             }
             set.addPair(100, 10000);
