@@ -3,6 +3,7 @@ jdk:
   - oraclejdk8
   - oraclejdk7
   - openjdk7
-script: mvn clean verify
+before_install:
+  - pip install --user codecov
 after_success:
-  - bash <(curl -s https://codecov.io/bash)
+  - codecov
