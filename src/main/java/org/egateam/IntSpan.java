@@ -70,6 +70,7 @@
 
 package org.egateam;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -799,7 +800,7 @@ public class IntSpan {
      */
     public int max() throws AssertionError {
         if ( !isNotEmpty() ) throw new AssertionError();
-        return edges.get(edges.size() - 1);
+        return edges.get(edges.size() - 1) - 1;
     }
 
     //----------------------------------------------------------
@@ -899,9 +900,55 @@ public class IntSpan {
         return index;
     }
 
+    // TODO: slice()
+
     //----------------------------------------------------------
     // Spans operations
     //----------------------------------------------------------
+
+    /**
+     * Returns a set consisting of a single span from set.min() to set.max().
+     *
+     * @return a set consisting of a single span from set.min() to set.max()
+     */
+    public IntSpan cover() {
+        IntSpan newSet = new IntSpan();
+        if ( isNotEmpty() ) {
+            newSet.addPair(min(), max());
+        }
+        return newSet;
+    }
+
+    /**
+     * Returns a set containing all the holes in this set, that is, all the integers that are in-between
+     * spans of this set.
+     *
+     * @return a set containing all the holes in this set
+     */
+    public IntSpan holes() {
+        IntSpan newSet = new IntSpan();
+
+        if ( isEmpty() || isUniversal() ) { // empty and universal set have no holes
+            return newSet;
+        } else {
+            IntSpan complementSet = complement();
+            ArrayList<Integer> ranges = complementSet.ranges();
+
+            // Remove infinite arms of complement set
+            if ( complementSet.isNegInf() ) {
+                ranges.remove(0);
+                ranges.remove(0);
+            }
+            if ( complementSet.isPosInf() ) {
+                ranges.remove(ranges.size() - 1);
+                ranges.remove(ranges.size() - 1);
+            }
+            newSet.addRange(ranges);
+
+            return newSet;
+        }
+    }
+
 
     //----------------------------------------------------------
     // Islands
