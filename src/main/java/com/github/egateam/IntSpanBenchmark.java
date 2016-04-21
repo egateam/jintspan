@@ -7,6 +7,7 @@
 package com.github.egateam;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 @SuppressWarnings("WeakerAccess")
 public class IntSpanBenchmark {
@@ -77,10 +78,23 @@ public class IntSpanBenchmark {
 
     /*
     mvn clean verify
-    time java -jar target/jintspan-0.1.1-SNAPSHOT.jar
+    time java -jar target/jintspan-0.1.1-SNAPSHOT.jar benchmark
      */
-    public static void main(String[] arg) {
-        RunBenchmark run = new RunBenchmark();
-        run.runBenchmark();
+    public static void main(String[] args) {
+        String jarName = new java.io.File(IntSpanBenchmark.class.getProtectionDomain()
+            .getCodeSource()
+            .getLocation()
+            .getPath())
+            .getName();
+        String prefix = "java -jar " + jarName;
+        String usage = String.format("Usage:\n    %s benchmark\n    %s file\n", prefix, prefix);
+
+        if ( args.length == 0 ) {
+            System.err.print(usage);
+        } else if ( Objects.equals(args[0], "benchmark") ) {
+            new RunBenchmark().runBenchmark();
+        } else {
+            System.err.printf("Unrecognized command %s", args[0]);
+        }
     }
 }
