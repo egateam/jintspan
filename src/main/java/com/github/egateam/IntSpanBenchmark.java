@@ -12,8 +12,11 @@ import java.util.Objects;
 @SuppressWarnings("WeakerAccess")
 public class IntSpanBenchmark {
 
+    private static class RunFile {
+
+    }
     private static class RunBenchmark {
-        void runBenchmark() {
+        void run() {
             for ( int i : new int[]{2, 3, 4, 5, 6} ) {
                 System.out.print(String.format("step %d\n", i));
                 long start = System.nanoTime();
@@ -92,7 +95,7 @@ public class IntSpanBenchmark {
         if ( args.length == 0 ) {
             System.err.print(usage);
         } else if ( Objects.equals(args[0], "benchmark") ) {
-            new RunBenchmark().runBenchmark();
+            new RunBenchmark().run();
         } else {
             System.err.printf("Unrecognized command %s", args[0]);
         }

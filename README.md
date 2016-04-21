@@ -8,7 +8,7 @@
 
 ```
 import java.util.ArrayList;
-import org.egateam.IntSpan;
+import com.github.egateam.IntSpan;
 
 IntSpan set = new IntSpan();
 for (int i : new int[]{1, 2, 3, 5, 7, 9} ) {
