@@ -10,7 +10,7 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 @SuppressWarnings("CanBeFinal")
-public class IntSpanTestRelation {
+public class IntSpanRelationTest {
 
     private static String[] sets =
         {

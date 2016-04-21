@@ -10,7 +10,7 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 @SuppressWarnings("CanBeFinal")
-public class IntSpanTestMembership {
+public class IntSpanMembershipTest {
 
     private static String[] sets = {"-", "1", "1-2", "1,3-5"};
 

@@ -11,7 +11,7 @@ import org.testng.annotations.Test;
 
 import java.util.ArrayList;
 
-public class IntSpanTestCreate {
+public class IntSpanCreateTest {
 
     @SuppressWarnings("CanBeFinal")
     private static class TestData {
