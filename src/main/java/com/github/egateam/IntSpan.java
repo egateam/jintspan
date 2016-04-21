@@ -78,7 +78,7 @@ import java.util.Collections;
 public class IntSpan {
     private static final String emptyString = "-";
 
-    // Real Largest int is getPosInf - 1
+    // Real Largest int is posInf - 1
     private static final int posInf = 2147483647 - 1; // INT_MAX - 1
     private static final int negInf = -2147483648 + 1; // INT_MIN + 1
 
