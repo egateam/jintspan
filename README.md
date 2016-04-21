@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/wang-q/jintspan.svg?branch=master)](https://travis-ci.org/wang-q/jintspan)
+[![codecov.io](https://codecov.io/github/wang-q/jintspan/coverage.svg?branch=master)](https://codecov.io/github/wang-q/jintspan?branch=master)
 
 # NAME
 
