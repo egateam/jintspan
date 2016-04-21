@@ -9,7 +9,7 @@ package com.github.egateam;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-public class IntSpanTestBinary {
+public class IntSpanBinaryTest {
 
     @SuppressWarnings("CanBeFinal")
     private static class TestData {
