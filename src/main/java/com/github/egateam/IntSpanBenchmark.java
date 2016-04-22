@@ -35,8 +35,8 @@ public class IntSpanBenchmark {
 
                 long start = System.nanoTime();
                 for ( int i = 1; i <= 100; i++ ) {
-                    set1 = new IntSpan(r1);
-                    set2 = new IntSpan(r2);
+                    new IntSpan(r1);
+                    new IntSpan(r2);
                 }
                 long end = System.nanoTime();
 

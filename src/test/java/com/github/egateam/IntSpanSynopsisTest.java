@@ -42,7 +42,7 @@ public class IntSpanSynopsisTest {
         // snippet 1
         {
             IntSpan set = new IntSpan();
-            for ( int i : new int[]{1, 2, 3, 5, 7, 9} ) {
+            for (int i : new int[]{1, 2, 3, 5, 7, 9}) {
                 set.add(i);
             }
             set.addPair(100, 10000);
@@ -52,9 +52,14 @@ public class IntSpanSynopsisTest {
         }
 
         {
-            IntSpan set = new IntSpan(new int[]{1, 2, 3, 5, 7, 9} );
-            set.addPair(100, 10000);
-            set.remove(1000);
+            IntSpan set = new IntSpan(new int[]{1, 2, 3, 5, 7, 9}).addPair(100, 10000).remove(1000);
+
+            testConstructors(set);
+        }
+
+        {
+            IntSpan set = new IntSpan();
+            set.add(new int[]{1, 2, 3, 5, 7, 9}).addPair(100, 10000).remove(1000);
 
             testConstructors(set);
         }
@@ -78,7 +83,7 @@ public class IntSpanSynopsisTest {
 
         {
             IntSpan set = new IntSpan();
-            for ( int i : new int[]{1, 2, 3, 5, 7, 9} ) {
+            for (int i : new int[]{1, 2, 3, 5, 7, 9}) {
                 set.add(i);
             }
             set.addPair(100, 10000);
@@ -92,7 +97,7 @@ public class IntSpanSynopsisTest {
 
         {
             IntSpan set = new IntSpan(-10, 1).clear();
-            for ( int i : new int[]{1, 2, 3, 5, 7, 9} ) {
+            for (int i : new int[]{1, 2, 3, 5, 7, 9}) {
                 set.add(i);
             }
             set.addPair(100, 10000);
@@ -108,7 +113,7 @@ public class IntSpanSynopsisTest {
             IntSpan set = new IntSpan(1, 10);
             set.clear();
 
-            for ( int i : new int[]{1, 2, 3, 5, 7, 9} ) {
+            for (int i : new int[]{1, 2, 3, 5, 7, 9}) {
                 set.add(i);
             }
             set.addPair(100, 10000);
@@ -128,17 +133,17 @@ public class IntSpanSynopsisTest {
             ArrayList<Integer> ranges1000 = new ArrayList<>(Arrays.asList(1000, 1000));
 
             set.clear().
-                addPair(1, 3).add(5).add(7).add(9).addPair(100, 10000)
-                .merge(set1000).subtract(set1000)
-                .remove(7).add(7)
-                .remove("7").add("7")
-                .add(1000).remove(1000)
-                .addRange(ranges1000).removeRange(ranges1000)
-                .addPair(1000, 1000).removePair(1000, 1000)
-                .add(ranges1000).remove(ranges1000)
-                .add("1000").remove("1000")
-                .add(set1000).remove(set1000)
-                .remove(1000);
+                    addPair(1, 3).add(5).add(7).add(9).addPair(100, 10000)
+                    .merge(set1000).subtract(set1000)
+                    .remove(7).add(7)
+                    .remove("7").add("7")
+                    .add(1000).remove(1000)
+                    .addRange(ranges1000).removeRange(ranges1000)
+                    .addPair(1000, 1000).removePair(1000, 1000)
+                    .add(ranges1000).remove(ranges1000)
+                    .add("1000").remove("1000")
+                    .add(set1000).remove(set1000)
+                    .remove(1000);
 
             testConstructors(set);
         }
