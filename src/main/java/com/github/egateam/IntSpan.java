@@ -11,7 +11,7 @@
  * 5 programming language system itself.
  *
  * @author Qiang Wang
- * @since 1.6
+ * @since 1.7
  */
 
 package com.github.egateam;
