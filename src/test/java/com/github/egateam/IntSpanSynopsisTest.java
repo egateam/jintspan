@@ -52,6 +52,14 @@ public class IntSpanSynopsisTest {
         }
 
         {
+            IntSpan set = new IntSpan(new int[]{1, 2, 3, 5, 7, 9} );
+            set.addPair(100, 10000);
+            set.remove(1000);
+
+            testConstructors(set);
+        }
+
+        {
             IntSpan set = new IntSpan();
             set.add(new ArrayList<>(Arrays.asList(1, 2, 3, 5, 7, 9)));
             set.addPair(100, 10000);

@@ -1,61 +1,6 @@
 /**
  * <tt>IntSpan</tt> handles of sets containing integer spans.
  * <p>
- * <strong>SYNOPSIS</strong>
- * <pre>
- *     import java.util.ArrayList;
- *     import com.github.egateam.IntSpan;
- *
- *     IntSpan set = new IntSpan();
- *     for (int i : new int[]{1, 2, 3, 5, 7, 9} ) {
- *         set.add(i);
- *     }
- *
- *     // or use ArrayList, that's faster but more trivial
- *     // set.add(new ArrayList<Integer>(Arrays.asList(1, 2, 3, 5, 7, 9)));
- *     // or
- *     // IntSpan set = new IntSpan(new ArrayList<Integer>(Arrays.asList(1, 2, 3, 5, 7, 9)));
- *
- *     set.addPair(100, 10000);
- *     set.remove(1000);
- *     System.out.println(set.asString()); // 1-3,5,7,9,100-999,1001-10000
- * </pre>
- * <p>
- * <strong>DESCRIPTION</strong>
- * <p>
- * The class <tt>IntSpan</tt> represents sets of integers as a number of inclusive ranges, for
- * example '1-10,19-23,45-48'. Because many of its operations involve linear searches of the list of
- * ranges its overall performance tends to be proportional to the number of distinct ranges. This is
- * fine for small sets but suffers compared to other possible set representations (bit vectors, hash
- * keys) when the number of ranges grows large.
- * <p>
- * This module also represents sets as ranges of values but stores those ranges in order and uses a
- * binary search for many internal operations so that overall performance tends towards O log N
- * where N is the number of ranges.
- * <p>
- * The internal representation used by this module is extremely simple: a set is represented as a
- * list of integers. Integers in even numbered positions (0, 2, 4 etc) represent the start of a run
- * of numbers while those in odd numbered positions represent the ends of runs. As an example the
- * set (1, 3-7, 9, 11, 12) would be represented internally as (1, 2, 3, 8, 11, 13).
- * <p>
- * Sets may be infinite - assuming you're prepared to accept that infinity is actually no more than
- * a fairly large integer. Specifically the constants <tt>negINF</tt> and <tt>posINF</tt> are
- * defined to be (- 2^31 + 1) and (2^31 - 2) respectively. To create an infinite set invert an empty
- * one:
- * <pre>
- *     IntSpan infSet = new IntSpan().invert();
- * </pre>
- * <p>
- * Sets need only be bounded in one direction - for example this is the set of all positive integers
- * (assuming you accept the slightly feeble definition of infinity we're using):
- * <pre>
- *     IntSpan posInfSet = new IntSpan();
- *     posInfSet.addPair(1, IntSpan.getPosInf());
- * </pre>
- * <p>
- * This Java class is ported from the Perl module <tt>AlignDB::IntSpan</tt> which contains many
- * codes from <tt>Set::IntSpan</tt>, <tt>Set::IntSpan::Fast</tt> and <tt>Set::IntSpan::Island</tt>.
- * <p>
  * <strong>AUTHOR</strong>
  * Qiang Wang, wang-q@outlook.com
  * <p>
@@ -112,11 +57,17 @@ public class IntSpan {
     }
 
     /**
+     * Constructs a set with all elements in Array.
+     */
+    public IntSpan(int[] array) {
+        add(array);
+    }
+
+    /**
      * Constructs a set with all elements in ArrayList.
      */
     public IntSpan(ArrayList<Integer> list) {
-        ArrayList<Integer> ranges = listToRanges(list);
-        addRange(ranges);
+        add(list);
     }
 
     /**
@@ -214,22 +165,22 @@ public class IntSpan {
      * @return a string representation of this set
      */
     public String asString() {
-        if ( isEmpty() ) {
+        if (isEmpty()) {
             return emptyString;
         }
 
         String runlist = "";
 
-        for ( int i = 0; i < spanSize(); i++ ) {
+        for (int i = 0; i < spanSize(); i++) {
             int lower = edges.get(i * 2);
             int upper = edges.get(i * 2 + 1) - 1;
 
             String buf = "";
-            if ( i != 0 ) {
+            if (i != 0) {
                 buf += ",";
             }
 
-            if ( lower == upper ) {
+            if (lower == upper) {
                 buf += Integer.toString(lower);
             } else {
                 buf += Integer.toString(lower) + "-" + Integer.toString(upper);
@@ -248,15 +199,15 @@ public class IntSpan {
      */
     public ArrayList<Integer> asArray() {
         ArrayList<Integer> array = new ArrayList<>();
-        if ( isEmpty() ) {
+        if (isEmpty()) {
             return array;
         }
 
-        for ( int i = 0; i < spanSize(); i++ ) {
+        for (int i = 0; i < spanSize(); i++) {
             int lower = edges.get(i * 2);
             int upper = edges.get(i * 2 + 1) - 1;
 
-            for ( int n = lower; n <= upper; n++ ) {
+            for (int n = lower; n <= upper; n++) {
                 array.add(n);
             }
 
@@ -272,11 +223,11 @@ public class IntSpan {
      */
     public ArrayList<Integer> ranges() {
         ArrayList<Integer> ranges = new ArrayList<>();
-        if ( isEmpty() ) {
+        if (isEmpty()) {
             return ranges;
         }
 
-        for ( int i = 0; i < spanSize(); i++ ) {
+        for (int i = 0; i < spanSize(); i++) {
             int lower = edges.get(i * 2);
             int upper = edges.get(i * 2 + 1) - 1;
             ranges.add(lower);
@@ -296,11 +247,11 @@ public class IntSpan {
      */
     public int cardinality() {
         int cardinality = 0;
-        if ( isEmpty() ) {
+        if (isEmpty()) {
             return cardinality;
         }
 
-        for ( int i = 0; i < spanSize(); i++ ) {
+        for (int i = 0; i < spanSize(); i++) {
             int lower = edges.get(i * 2);
             int upper = edges.get(i * 2 + 1) - 1;
             cardinality += upper - lower + 1;
@@ -383,9 +334,9 @@ public class IntSpan {
      * @return <tt>true</tt> if this set contains all of the specified numbers
      */
     public boolean containsAll(ArrayList<Integer> list) {
-        for ( int i : list ) {
+        for (int i : list) {
             int pos = findPos(i + 1, 0);
-            if ( (pos & 1) != 1 ) {
+            if ((pos & 1) != 1) {
                 return false;
             }
         }
@@ -411,9 +362,9 @@ public class IntSpan {
      * @return <tt>true</tt> if this set contains any of the specified numbers
      */
     public boolean containsAny(ArrayList<Integer> list) {
-        for ( int i : list ) {
+        for (int i : list) {
             int pos = findPos(i + 1, 0);
-            if ( (pos & 1) == 1 ) {
+            if ((pos & 1) == 1) {
                 return true;
             }
         }
@@ -437,20 +388,20 @@ public class IntSpan {
     public IntSpan addPair(int lower, int upper) throws AssertionError {
         upper++;
 
-        if ( lower > upper )
+        if (lower > upper)
             throw new AssertionError(String.format("Bad order: %s,%s", Integer.toString(lower), Integer.toString(upper)));
 
         int lowerPos = findPos(lower, 0);
         int upperPos = findPos(upper + 1, lowerPos);
 
-        if ( (lowerPos & 1) == 1 ) {
+        if ((lowerPos & 1) == 1) {
             lower = edges.get(--lowerPos);
         }
-        if ( (upperPos & 1) == 1 ) {
+        if ((upperPos & 1) == 1) {
             upper = edges.get(upperPos++);
         }
 
-        for ( int i = lowerPos; i < upperPos; i++ ) {
+        for (int i = lowerPos; i < upperPos; i++) {
             edges.remove(lowerPos);
         }
         edges.add(lowerPos, lower);
@@ -468,9 +419,9 @@ public class IntSpan {
      * @return this set for method chaining
      */
     public IntSpan addRange(ArrayList<Integer> ranges) throws AssertionError {
-        if ( ranges.size() % 2 != 0 ) throw new AssertionError("Number of ranges must be even");
+        if (ranges.size() % 2 != 0) throw new AssertionError("Number of ranges must be even");
 
-        while ( ranges.size() > 0 ) {
+        while (ranges.size() > 0) {
             int lower = ranges.remove(0);
             int upper = ranges.remove(0);
             addPair(lower, upper);
@@ -498,6 +449,17 @@ public class IntSpan {
         return this;
     }
 
+    public IntSpan add(int[] array) {
+        ArrayList<Integer> list = new ArrayList<>();
+        for (int i : array) {
+            list.add(i);
+        }
+        ArrayList<Integer> ranges = listToRanges(list);
+        addRange(ranges);
+
+        return this;
+    }
+
     public IntSpan add(ArrayList<Integer> list) {
         ArrayList<Integer> ranges = listToRanges(list);
         addRange(ranges);
@@ -515,7 +477,7 @@ public class IntSpan {
         runlist = stripWhitespace(runlist);
 
         // skip empty set
-        if ( !runlist.equals("") && !runlist.equals(emptyString) ) {
+        if (!runlist.equals("") && !runlist.equals(emptyString)) {
             addRange(runlistToRanges(runlist));
         }
 
@@ -534,7 +496,7 @@ public class IntSpan {
      * @return this set for method chaining
      */
     public IntSpan invert() {
-        if ( isEmpty() ) {
+        if (isEmpty()) {
             // Universal set
             edges = new ArrayList<>();
             edges.add(negInf);
@@ -543,13 +505,13 @@ public class IntSpan {
             // Either add or remove infinity from each end. The net effect is always an even number
             // of additions and deletions
 
-            if ( isNegInf() ) {
+            if (isNegInf()) {
                 edges.remove(0); // shift
             } else {
                 edges.add(0, negInf); // unshift
             }
 
-            if ( isPosInf() ) {
+            if (isPosInf()) {
                 edges.remove(edges.size() - 1); // pop
             } else {
                 edges.add(posInf); // push
@@ -583,7 +545,7 @@ public class IntSpan {
      * @return this set for method chaining
      */
     public IntSpan removeRange(ArrayList<Integer> ranges) throws AssertionError {
-        if ( ranges.size() % 2 != 0 ) throw new AssertionError("Number of ranges must be even");
+        if (ranges.size() % 2 != 0) throw new AssertionError("Number of ranges must be even");
 
         invert();
         addRange(ranges);
@@ -628,7 +590,7 @@ public class IntSpan {
         runlist = stripWhitespace(runlist);
 
         // empty set
-        if ( !runlist.equals("") && !runlist.equals(emptyString) ) {
+        if (!runlist.equals("") && !runlist.equals(emptyString)) {
             removeRange(runlistToRanges(runlist));
         }
 
@@ -688,7 +650,7 @@ public class IntSpan {
      * @return the relative complement of the supplied set in this set
      */
     public IntSpan diff(IntSpan supplied) {
-        if ( isEmpty() ) {
+        if (isEmpty()) {
             return this;
         } else {
             IntSpan newSet = copy();
@@ -705,7 +667,7 @@ public class IntSpan {
      * @return the intersection of this set and the supplied set
      */
     public IntSpan intersect(IntSpan supplied) {
-        if ( isEmpty() ) {
+        if (isEmpty()) {
             return this;
         } else {
             IntSpan newSet = complement();
@@ -744,14 +706,14 @@ public class IntSpan {
         ArrayList<Integer> edges_a = this.getEdges();
         ArrayList<Integer> edges_b = supplied.getEdges();
 
-        if ( edges_a.size() != edges_b.size() ) {
+        if (edges_a.size() != edges_b.size()) {
             return false;
         }
 
-        for ( int i = 0; i < edges_a.size(); i++ ) {
+        for (int i = 0; i < edges_a.size(); i++) {
             int a = edges_a.get(i);
             int b = edges_b.get(i);
-            if ( a != b ) {
+            if (a != b) {
                 return false;
             }
         }
@@ -788,7 +750,7 @@ public class IntSpan {
      * @throws AssertionError
      */
     public int min() throws AssertionError {
-        if ( !isNotEmpty() ) throw new AssertionError();
+        if (!isNotEmpty()) throw new AssertionError();
         return edges.get(0);
     }
 
@@ -799,7 +761,7 @@ public class IntSpan {
      * @throws AssertionError
      */
     public int max() throws AssertionError {
-        if ( !isNotEmpty() ) throw new AssertionError();
+        if (!isNotEmpty()) throw new AssertionError();
         return edges.get(edges.size() - 1) - 1;
     }
 
@@ -819,11 +781,11 @@ public class IntSpan {
      * @throws AssertionError
      */
     public int at(int index) throws AssertionError {
-        if ( isEmpty() ) throw new AssertionError("Indexing on an empty set");
-        if ( Math.abs(index) < 1 ) throw new AssertionError("Index start from 1");
-        if ( Math.abs(index) > cardinality() ) throw new AssertionError("Out of max index");
+        if (isEmpty()) throw new AssertionError("Indexing on an empty set");
+        if (Math.abs(index) < 1) throw new AssertionError("Index start from 1");
+        if (Math.abs(index) > cardinality()) throw new AssertionError("Out of max index");
 
-        if ( index > 0 ) {
+        if (index > 0) {
             return atPos(index);
         } else {
             return atNeg(-index);
@@ -834,12 +796,12 @@ public class IntSpan {
         int element = min();
         int countOfElementsBefore = 0;
 
-        for ( int i = 0; i < spanSize(); i++ ) {
+        for (int i = 0; i < spanSize(); i++) {
             int lower = edges.get(i * 2);
             int upper = edges.get(i * 2 + 1) - 1;
             int thisSpanSize = upper - lower + 1;
 
-            if ( index > countOfElementsBefore + thisSpanSize ) {
+            if (index > countOfElementsBefore + thisSpanSize) {
                 countOfElementsBefore += thisSpanSize;
             } else {
                 element = index - countOfElementsBefore - 1 + lower;
@@ -854,12 +816,12 @@ public class IntSpan {
         int element = max();
         int countOfElementsAfter = 0;
 
-        for ( int i = spanSize() - 1; i >= 0; i-- ) {
+        for (int i = spanSize() - 1; i >= 0; i--) {
             int lower = edges.get(i * 2);
             int upper = edges.get(i * 2 + 1) - 1;
             int thisSpanSize = upper - lower + 1;
 
-            if ( index > countOfElementsAfter + thisSpanSize ) {
+            if (index > countOfElementsAfter + thisSpanSize) {
                 countOfElementsAfter += thisSpanSize;
             } else {
                 element = upper - (index - countOfElementsAfter) + 1;
@@ -878,19 +840,19 @@ public class IntSpan {
      * @throws AssertionError
      */
     public int index(int element) throws AssertionError {
-        if ( isEmpty() ) throw new AssertionError("Indexing on an empty set");
-        if ( !contains(element) ) throw new AssertionError("Element doesn't exist");
+        if (isEmpty()) throw new AssertionError("Indexing on an empty set");
+        if (!contains(element)) throw new AssertionError("Element doesn't exist");
 
         int index = -1; // not valid
         int countOfElementsBefore = 0;
 
 
-        for ( int i = 0; i < spanSize(); i++ ) {
+        for (int i = 0; i < spanSize(); i++) {
             int lower = edges.get(i * 2);
             int upper = edges.get(i * 2 + 1) - 1;
             int thisSpanSize = upper - lower + 1;
 
-            if ( element >= lower && element <= upper ) {
+            if (element >= lower && element <= upper) {
                 index = element - lower + 1 + countOfElementsBefore;
             } else {
                 countOfElementsBefore += thisSpanSize;
@@ -913,7 +875,7 @@ public class IntSpan {
      */
     public IntSpan cover() {
         IntSpan newSet = new IntSpan();
-        if ( isNotEmpty() ) {
+        if (isNotEmpty()) {
             newSet.addPair(min(), max());
         }
         return newSet;
@@ -928,18 +890,18 @@ public class IntSpan {
     public IntSpan holes() {
         IntSpan newSet = new IntSpan();
 
-        if ( isEmpty() || isUniversal() ) { // empty and universal set have no holes
+        if (isEmpty() || isUniversal()) { // empty and universal set have no holes
             return newSet;
         } else {
             IntSpan complementSet = complement();
             ArrayList<Integer> ranges = complementSet.ranges();
 
             // Remove infinite arms of complement set
-            if ( complementSet.isNegInf() ) {
+            if (complementSet.isNegInf()) {
                 ranges.remove(0);
                 ranges.remove(0);
             }
-            if ( complementSet.isPosInf() ) {
+            if (complementSet.isPosInf()) {
                 ranges.remove(ranges.size() - 1);
                 ranges.remove(ranges.size() - 1);
             }
@@ -961,18 +923,18 @@ public class IntSpan {
     public IntSpan inset(int n) {
         IntSpan newSet = new IntSpan();
 
-        for ( int i = 0; i < spanSize(); i++ ) {
+        for (int i = 0; i < spanSize(); i++) {
             int lower = edges.get(i * 2);
             int upper = edges.get(i * 2 + 1) - 1;
 
-            if ( lower != getNegInf() ) {
+            if (lower != getNegInf()) {
                 lower += n;
             }
-            if ( upper != getPosInf() ) {
+            if (upper != getPosInf()) {
                 upper -= n;
             }
 
-            if ( lower <= upper ) {
+            if (lower <= upper) {
                 newSet.addPair(lower, upper);
             }
         }
@@ -1009,12 +971,12 @@ public class IntSpan {
     public IntSpan excise(int minLength) {
         IntSpan newSet = new IntSpan();
 
-        for ( int i = 0; i < spanSize(); i++ ) {
+        for (int i = 0; i < spanSize(); i++) {
             int lower = edges.get(i * 2);
             int upper = edges.get(i * 2 + 1) - 1;
             int thisSpanSize = upper - lower + 1;
 
-            if ( thisSpanSize >= minLength ) {
+            if (thisSpanSize >= minLength) {
                 newSet.addPair(lower, upper);
             }
         }
@@ -1034,12 +996,12 @@ public class IntSpan {
         IntSpan holesSet = holes();
         ArrayList<Integer> holesEdges = holesSet.getEdges();
 
-        for ( int i = 0; i < holesSet.spanSize(); i++ ) {
+        for (int i = 0; i < holesSet.spanSize(); i++) {
             int lower = holesEdges.get(i * 2);
             int upper = holesEdges.get(i * 2 + 1) - 1;
             int thisSpanSize = upper - lower + 1;
 
-            if ( thisSpanSize <= maxLength ) {
+            if (thisSpanSize <= maxLength) {
                 newSet.addPair(lower, upper);
             }
         }
@@ -1066,9 +1028,9 @@ public class IntSpan {
         int count = list.size();
         int pos = 0;
 
-        while ( pos < count ) {
+        while (pos < count) {
             int end = pos + 1;
-            while ( (end < count) && (list.get(end) <= list.get(end - 1) + 1) ) {
+            while ((end < count) && (list.get(end) <= list.get(end - 1) + 1)) {
                 end++;
             }
             ranges.add(list.get(pos));
@@ -1083,7 +1045,7 @@ public class IntSpan {
         String result = "";
 
         String[] str = string.split("\\s");
-        for ( String s : str ) {
+        for (String s : str) {
             result += s;
         }
 
@@ -1094,41 +1056,41 @@ public class IntSpan {
         ArrayList<Integer> ranges = new ArrayList<>();
 
         String[] str = runlist.split(",");
-        for ( String s : str ) {
+        for (String s : str) {
             boolean lowerIsNeg = s.substring(0, 1).equals("-");
             boolean upperIsNeg = s.contains("--");
 
             String[] str2 = s.split("-");
             ArrayList<Integer> range = new ArrayList<>();
-            for ( String s2 : str2 ) {
-                if ( !s2.equals("") ) {
+            for (String s2 : str2) {
+                if (!s2.equals("")) {
                     range.add(Integer.parseInt(s2));
                 }
             }
 
             int lower, upper;
 
-            if ( range.size() == 1 ) {
+            if (range.size() == 1) {
                 lower = range.get(0);
-                if ( lowerIsNeg ) {
+                if (lowerIsNeg) {
                     lower = -lower;
                 }
                 upper = lower;
-            } else if ( range.size() == 2 ) {
+            } else if (range.size() == 2) {
                 lower = range.get(0);
-                if ( lowerIsNeg ) {
+                if (lowerIsNeg) {
                     lower = -lower;
                 }
 
                 upper = range.get(1);
-                if ( upperIsNeg ) {
+                if (upperIsNeg) {
                     upper = -upper;
                 }
             } else {
                 throw new AssertionError(String.format("Single run errors [%s]. Size of tokens is %d", s, range.size()));
             }
 
-            if ( lower > upper ) throw new AssertionError(String.format("Bad order [%s]", s));
+            if (lower > upper) throw new AssertionError(String.format("Bad order [%s]", s));
             ranges.add(lower);
             ranges.add(upper);
         }
@@ -1151,11 +1113,11 @@ public class IntSpan {
     private int findPos(int val, int low) {
         int high = edgeSize();
 
-        while ( low < high ) {
+        while (low < high) {
             int mid = (low + high) / 2;
-            if ( val < edges.get(mid) ) {
+            if (val < edges.get(mid)) {
                 high = mid;
-            } else if ( val > edges.get(mid) ) {
+            } else if (val > edges.get(mid)) {
                 low = mid + 1;
             } else {
                 return mid;
