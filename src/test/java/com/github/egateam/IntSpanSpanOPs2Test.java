@@ -50,12 +50,7 @@ public class IntSpanSpanOPs2Test {
             new TestData("0,2-3,6-8,12-15,20-24,30-35", 2, "22,32-33"),
         };
 
-    @Test
-    public void prompt() {
-        System.out.println("TestSpanOPs inset pad trim");
-    }
-
-    @Test
+    @Test(description = "TestSpanOPs inset pad trim")
     public void testSpanOPs() {
 
         for ( TestData t : tests ) {

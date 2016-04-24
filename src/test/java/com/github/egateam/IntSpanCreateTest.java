@@ -45,12 +45,7 @@ public class IntSpanCreateTest {
             new TestData("1,2,3,4,5,6,7", "1-7", new int[]{1, 2, 3, 4, 5, 6, 7}),
         };
 
-    @Test
-    public void prompt() {
-        System.out.println("TestCreations");
-    }
-
-    @Test
+    @Test(description = "Test creations from runlist")
     public void testCreationRunlist() {
 
         for ( TestData t : tests ) {
@@ -74,7 +69,7 @@ public class IntSpanCreateTest {
         }
     }
 
-    @Test
+    @Test(description = "Test creations from int")
     public void testCreationInt() {
         {
             String message = "Test int";
@@ -91,7 +86,7 @@ public class IntSpanCreateTest {
         }
     }
 
-    @Test
+    @Test(description = "Test creations with error")
     public void testCreationError() {
         {
             try {

@@ -52,12 +52,7 @@ public class IntSpanBinaryTest {
             new TestData("1-3,5,8-11", "1-6  ", "1-6,8-11", "1-3,5", "4,6,8-11 ", "8-11", "4,6  "),
         };
 
-    @Test
-    public void prompt() {
-        System.out.println("TestBinaryOPs");
-    }
-
-    @Test
+    @Test(description = "Test Binary operators")
     public void testBinary() {
 
         for ( TestData t : tests ) {

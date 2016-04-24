@@ -47,12 +47,7 @@ public class IntSpanRelationTest {
             {1, 1, 0, 0, 0, 1},
         };
 
-    @Test
-    public void prompt() {
-        System.out.println("TestRelations");
-    }
-
-    @Test
+    @Test(description = "Test relations from runlist")
     public void testRelation() {
         for ( int i = 0; i < sets.length; i++ ) {
             for ( int j = 0; j < sets.length; j++ ) {

@@ -39,12 +39,7 @@ public class IntSpanMembershipTest {
             {"3-5  ", "1,3-5", "1,4-5", "1,3,5"},
         };
 
-    @Test
-    public void prompt() {
-        System.out.println("TestMembership");
-    }
-
-    @Test
+    @Test(description = "Test membership")
     public void testMembership() {
         boolean containsAll = true, containsAny = true;
         for ( int i = 0; i < sets.length; i++ ) {

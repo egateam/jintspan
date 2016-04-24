@@ -41,12 +41,7 @@ public class IntSpanSpanOPs3Test {
             new TestData("1-5,9-10,12-13,15", 3, "1-5", "1-15"),
         };
 
-    @Test
-    public void prompt() {
-        System.out.println("TestSpanOPs excise fill");
-    }
-
-    @Test
+    @Test(description = "TestSpanOPs excise fill")
     public void testSpanOPs() {
 
         for ( TestData t : tests ) {

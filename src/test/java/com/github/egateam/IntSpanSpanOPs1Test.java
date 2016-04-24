@@ -35,12 +35,7 @@ public class IntSpanSpanOPs1Test {
 
         };
 
-    @Test
-    public void prompt() {
-        System.out.println("TestSpanOPs cover holes");
-    }
-
-    @Test
+    @Test(description = "TestSpanOPs cover holes")
     public void testSpanOPs() {
 
         for ( TestData t : tests ) {

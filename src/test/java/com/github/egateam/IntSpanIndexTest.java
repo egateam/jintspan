@@ -55,12 +55,7 @@ public class IntSpanIndexTest {
             new TestData("1-10,21-30,41-50", -31, null, null),
         };
 
-    @Test
-    public void prompt() {
-        System.out.println("TestIndex");
-    }
-
-    @Test
+    @Test(description = "Test indexing")
     public void testIndex() {
 
         for ( TestData t : tests ) {
