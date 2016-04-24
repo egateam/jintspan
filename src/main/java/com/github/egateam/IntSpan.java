@@ -1143,6 +1143,7 @@ public class IntSpan {
         return asString();
     }
 
+    @Override
     public String toString() {
         return asString();
     }
