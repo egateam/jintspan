@@ -1,6 +1,6 @@
-[![Travis](https://img.shields.io/travis/egateam/jintspan.svg)]()
-[![Codecov branch](https://img.shields.io/codecov/c/github/wang-q/jintspan/master.svg)]()
-[![Maven Central](https://img.shields.io/maven-central/v/com.github.egateam/jintspan.svg)]()
+[![Travis](https://img.shields.io/travis/egateam/jintspan.svg)](https://travis-ci.org/egateam/jintspan)
+[![Codecov branch](https://img.shields.io/codecov/c/github/wang-q/jintspan/master.svg)](https://codecov.io/github/wang-q/jintspan?branch=master)
+[![Maven Central](https://img.shields.io/maven-central/v/com.github.egateam/jintspan.svg)](http://search.maven.org/#search|ga|1|g%3A%22com.github.egateam%22%20AND%20a%3A%22jintspan%22)
 
 # NAME
 
