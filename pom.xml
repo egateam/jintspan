@@ -4,12 +4,48 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+    <packaging>jar</packaging>
+
     <groupId>com.github.egateam</groupId>
     <artifactId>jintspan</artifactId>
     <version>0.1.1-SNAPSHOT</version>
 
+    <name>jintspan</name>
+    <description>`IntSpan` handles of sets containing integer spans.</description>
+    <url>https://github.com/egateam/jintspan</url>
+
+    <issueManagement>
+        <system>Github Issue</system>
+        <url>https://github.com/egateam/jintspan/issues</url>
+    </issueManagement>
+
+    <licenses>
+        <license>
+            <name>GNU General Public License, Version 1</name>
+            <url>http://dev.perl.org/licenses/gpl1.html</url>
+        </license>
+        <license>
+            <name>The "Artistic License"</name>
+            <url>http://dev.perl.org/licenses/artistic.html</url>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <name>Qiang Wang</name>
+            <email>wang-q@outlook.com</email>
+        </developer>
+    </developers>
+
+    <scm>
+        <connection>scm:git:git@github.com:egateam/jintspan.git</connection>
+        <developerConnection>scm:git:git@github.com:egateam/jintspan.git</developerConnection>
+        <url>git@github.com:egateam/jintspan.git</url>
+    </scm>
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     </properties>
 
     <dependencies>
