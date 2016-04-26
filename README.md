@@ -1,5 +1,6 @@
-[![Build Status](https://travis-ci.org/egateam/jintspan.svg?branch=master)](https://travis-ci.org/egateam/jintspan)
-[![codecov.io](https://codecov.io/github/wang-q/jintspan/coverage.svg?branch=master)](https://codecov.io/github/wang-q/jintspan?branch=master)
+[![Travis](https://img.shields.io/travis/egateam/jintspan.svg)]()
+[![Codecov branch](https://img.shields.io/codecov/c/github/wang-q/jintspan/master.svg)]()
+[![Maven Central](https://img.shields.io/maven-central/v/com.github.egateam/jintspan.svg)]()
 
 # NAME
 
