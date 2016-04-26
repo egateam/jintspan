@@ -41,6 +41,8 @@ public class IntSpan {
 
     /**
      * Constructs a set with a single elements.
+     *
+     * @param val a valid integer
      */
     public IntSpan(int val) {
         addPair(val, val);
@@ -50,7 +52,7 @@ public class IntSpan {
      * Constructs a set with a pair of integers constituting a range.
      *
      * @param lower lower boundary
-     * @param upper upper boundary ( upper must >= lower)
+     * @param upper upper boundary ( upper must be larger than or equals to lower)
      */
     public IntSpan(int lower, int upper) {
         addPair(lower, upper);
@@ -58,6 +60,8 @@ public class IntSpan {
 
     /**
      * Constructs a set with all elements in Array.
+     *
+     * @param array integer array to add to this set
      */
     public IntSpan(int[] array) {
         add(array);
@@ -65,6 +69,8 @@ public class IntSpan {
 
     /**
      * Constructs a set with all elements in ArrayList.
+     *
+     * @param list integer list to add to this set
      */
     public IntSpan(ArrayList<Integer> list) {
         add(list);
@@ -72,6 +78,8 @@ public class IntSpan {
 
     /**
      * Constructs a copy set of the supplied set.
+     *
+     * @param supplied the supplied set
      */
     public IntSpan(IntSpan supplied) {
         edges = new ArrayList<>(supplied.getEdges());
@@ -79,6 +87,8 @@ public class IntSpan {
 
     /**
      * Constructs a set from the runlist string.
+     *
+     * @param runlist IntSpan string presentation
      */
     public IntSpan(String runlist) {
         add(runlist);
@@ -382,7 +392,7 @@ public class IntSpan {
      * A pair of integers constitute a range.
      *
      * @param lower lower boundary
-     * @param upper upper boundary ( upper must >= lower)
+     * @param upper upper boundary ( upper must be larger than or equals to lower)
      * @return this set for method chaining
      */
     public IntSpan addPair(int lower, int upper) throws AssertionError {
@@ -525,7 +535,7 @@ public class IntSpan {
      * Removes a pair of inclusive integers from this set.
      *
      * @param lower lower boundary
-     * @param upper upper boundary ( upper must >= lower)
+     * @param upper upper boundary ( upper must be larger than or equals to lower)
      * @return this set for method chaining
      */
     public IntSpan removePair(int lower, int upper) {
@@ -682,7 +692,7 @@ public class IntSpan {
      * Return a new set that contains all of the members that are in this set or the
      * supplied set but not both.
      *
-     * @param supplied set to be operated with this set
+     * @param supplied set to be operated
      * @return a new set that contains all of the members that are in this set or the supplied set
      * but not both
      */
@@ -700,6 +710,7 @@ public class IntSpan {
     /**
      * Returns <tt>true</tt> if this set and the supplied set contain the same elements.
      *
+     * @param supplied set to be compared
      * @return <tt>true</tt> if this set and the supplied set contain the same elements
      */
     public boolean equals(IntSpan supplied) {
@@ -724,6 +735,7 @@ public class IntSpan {
     /**
      * Returns <tt>true</tt> if this set is a subset of the supplied set.
      *
+     * @param supplied set to be compared
      * @return <tt>true</tt> if this set is a subset of the supplied set
      */
     public boolean subset(IntSpan supplied) {
@@ -733,6 +745,7 @@ public class IntSpan {
     /**
      * Returns <tt>true</tt> if this set is a superset of the supplied set.
      *
+     * @param supplied set to be compared
      * @return <tt>true</tt> if this set is a superset of the supplied set
      */
     public boolean superset(IntSpan supplied) {
@@ -747,10 +760,10 @@ public class IntSpan {
      * Returns the smallest element of this set (can't be empty).
      *
      * @return the smallest element of this set
-     * @throws AssertionError
+     * @throws AssertionError for empty IntSpan
      */
     public int min() throws AssertionError {
-        if ( !isNotEmpty() ) throw new AssertionError();
+        if ( !isNotEmpty() ) throw new AssertionError("Can't get extrema for empty IntSpan");
         return edges.get(0);
     }
 
@@ -758,10 +771,10 @@ public class IntSpan {
      * Returns the largest element of this set (can't be empty).
      *
      * @return the largest element of this set
-     * @throws AssertionError
+     * @throws AssertionError for empty IntSpan
      */
     public int max() throws AssertionError {
-        if ( !isNotEmpty() ) throw new AssertionError();
+        if ( !isNotEmpty() ) throw new AssertionError("Can't get extrema for empty IntSpan");
         return edges.get(edges.size() - 1) - 1;
     }
 
@@ -778,7 +791,7 @@ public class IntSpan {
      *
      * @param index index in this set
      * @return the (index)th element of set
-     * @throws AssertionError
+     * @throws AssertionError for empty IntSpan and invalid index
      */
     public int at(int index) throws AssertionError {
         if ( isEmpty() ) throw new AssertionError("Indexing on an empty set");
@@ -837,7 +850,7 @@ public class IntSpan {
      *
      * @param element the element
      * @return the index of an element in this set
-     * @throws AssertionError
+     * @throws AssertionError for empty IntSpan and invalid index
      */
     public int index(int element) throws AssertionError {
         if ( isEmpty() ) throw new AssertionError("Indexing on an empty set");
