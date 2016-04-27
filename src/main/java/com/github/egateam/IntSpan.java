@@ -27,6 +27,7 @@ public class IntSpan {
     private static final int posInf = 2147483647 - 1; // INT_MAX - 1
     private static final int negInf = -2147483648 + 1; // INT_MIN + 1
 
+    // TODO: Try HPPC
     private ArrayList<Integer> edges = new ArrayList<>();
 
     //----------------------------------------------------------
@@ -411,6 +412,8 @@ public class IntSpan {
             upper = edges.get(upperPos++);
         }
 
+//        http://java-performance.info/arraylist-performance/
+        // TODO: subList(int, int).clear()
         for ( int i = lowerPos; i < upperPos; i++ ) {
             edges.remove(lowerPos);
         }
@@ -439,6 +442,8 @@ public class IntSpan {
 
         return this;
     }
+
+    // TODO: When this IntSpan is empty, just convert ranges to edges
 
     /**
      * Merges the members of the supplied set into this set.
@@ -625,6 +630,8 @@ public class IntSpan {
         return newSet;
     }
 
+    // TODO: when supplied IntSpan larger than this, swap
+
     /**
      * Returns a new set that is the union (并集) of this set and the supplied set.
      *
@@ -661,7 +668,7 @@ public class IntSpan {
      */
     public IntSpan diff(IntSpan supplied) {
         if ( isEmpty() ) {
-            return this;
+            return new IntSpan();
         } else {
             IntSpan newSet = copy();
             newSet.subtract(supplied);
@@ -678,7 +685,7 @@ public class IntSpan {
      */
     public IntSpan intersect(IntSpan supplied) {
         if ( isEmpty() ) {
-            return this;
+            return new IntSpan();
         } else {
             IntSpan newSet = complement();
             newSet.merge(supplied.complement());
@@ -806,12 +813,12 @@ public class IntSpan {
     }
 
     private int atPos(int index) {
-        int element = min();
+        int element               = min();
         int countOfElementsBefore = 0;
 
         for ( int i = 0; i < spanSize(); i++ ) {
-            int lower = edges.get(i * 2);
-            int upper = edges.get(i * 2 + 1) - 1;
+            int lower        = edges.get(i * 2);
+            int upper        = edges.get(i * 2 + 1) - 1;
             int thisSpanSize = upper - lower + 1;
 
             if ( index > countOfElementsBefore + thisSpanSize ) {
@@ -826,12 +833,12 @@ public class IntSpan {
     }
 
     private int atNeg(int index) {
-        int element = max();
+        int element              = max();
         int countOfElementsAfter = 0;
 
         for ( int i = spanSize() - 1; i >= 0; i-- ) {
-            int lower = edges.get(i * 2);
-            int upper = edges.get(i * 2 + 1) - 1;
+            int lower        = edges.get(i * 2);
+            int upper        = edges.get(i * 2 + 1) - 1;
             int thisSpanSize = upper - lower + 1;
 
             if ( index > countOfElementsAfter + thisSpanSize ) {
@@ -856,13 +863,12 @@ public class IntSpan {
         if ( isEmpty() ) throw new AssertionError("Indexing on an empty set");
         if ( !contains(element) ) throw new AssertionError("Element doesn't exist");
 
-        int index = -1; // not valid
+        int index                 = -1; // not valid
         int countOfElementsBefore = 0;
 
-
         for ( int i = 0; i < spanSize(); i++ ) {
-            int lower = edges.get(i * 2);
-            int upper = edges.get(i * 2 + 1) - 1;
+            int lower        = edges.get(i * 2);
+            int upper        = edges.get(i * 2 + 1) - 1;
             int thisSpanSize = upper - lower + 1;
 
             if ( element >= lower && element <= upper ) {
@@ -906,8 +912,8 @@ public class IntSpan {
         if ( isEmpty() || isUniversal() ) { // empty and universal set have no holes
             return newSet;
         } else {
-            IntSpan complementSet = complement();
-            ArrayList<Integer> ranges = complementSet.ranges();
+            IntSpan            complementSet = complement();
+            ArrayList<Integer> ranges        = complementSet.ranges();
 
             // Remove infinite arms of complement set
             if ( complementSet.isNegInf() ) {
@@ -985,8 +991,8 @@ public class IntSpan {
         IntSpan newSet = new IntSpan();
 
         for ( int i = 0; i < spanSize(); i++ ) {
-            int lower = edges.get(i * 2);
-            int upper = edges.get(i * 2 + 1) - 1;
+            int lower        = edges.get(i * 2);
+            int upper        = edges.get(i * 2 + 1) - 1;
             int thisSpanSize = upper - lower + 1;
 
             if ( thisSpanSize >= minLength ) {
@@ -1006,12 +1012,12 @@ public class IntSpan {
     public IntSpan fill(int maxLength) {
         IntSpan newSet = copy();
 
-        IntSpan holesSet = holes();
+        IntSpan            holesSet   = holes();
         ArrayList<Integer> holesEdges = holesSet.getEdges();
 
         for ( int i = 0; i < holesSet.spanSize(); i++ ) {
-            int lower = holesEdges.get(i * 2);
-            int upper = holesEdges.get(i * 2 + 1) - 1;
+            int lower        = holesEdges.get(i * 2);
+            int upper        = holesEdges.get(i * 2 + 1) - 1;
             int thisSpanSize = upper - lower + 1;
 
             if ( thisSpanSize <= maxLength ) {
@@ -1038,8 +1044,8 @@ public class IntSpan {
         Collections.sort(list);
 
         ArrayList<Integer> ranges = new ArrayList<>();
-        int count = list.size();
-        int pos = 0;
+        int                count  = list.size();
+        int                pos    = 0;
 
         while ( pos < count ) {
             int end = pos + 1;
@@ -1054,6 +1060,7 @@ public class IntSpan {
         return ranges;
     }
 
+    // TODO: Remove stripWhitespace.
     private static String stripWhitespace(String string) {
         String result = "";
 
@@ -1065,15 +1072,17 @@ public class IntSpan {
         return result;
     }
 
+    // TODO: Try a regex approach
+    // consume 49.1% memory in file benchmark
     private ArrayList<Integer> runlistToRanges(String runlist) throws AssertionError {
         ArrayList<Integer> ranges = new ArrayList<>();
 
         String[] str = runlist.split(",");
         for ( String s : str ) {
-            boolean lowerIsNeg = s.substring(0, 1).equals("-");
+            boolean lowerIsNeg = s.startsWith("-");
             boolean upperIsNeg = s.contains("--");
 
-            String[] str2 = s.split("-");
+            String[]           str2  = s.split("-");
             ArrayList<Integer> range = new ArrayList<>();
             for ( String s2 : str2 ) {
                 if ( !s2.equals("") ) {

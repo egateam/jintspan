@@ -34,7 +34,7 @@ public class IntSpanBenchmark {
                 step++;
 
                 long start = System.nanoTime();
-                for ( int i = 1; i <= 100; i++ ) {
+                for ( int i = 1; i <= 1000; i++ ) {
                     new IntSpan(r1);
                     new IntSpan(r2);
                 }
@@ -48,7 +48,7 @@ public class IntSpanBenchmark {
                 step++;
 
                 long start = System.nanoTime();
-                for ( int i = 1; i <= 1000; i++ ) {
+                for ( int i = 1; i <= 10000; i++ ) {
                     set1 = new IntSpan(r1);
                     set2 = new IntSpan(r2);
                     set1.intersect(set2);
@@ -62,7 +62,7 @@ public class IntSpanBenchmark {
                 System.out.printf("step %d intersect runlist\n", step);
 
                 long start = System.nanoTime();
-                for ( int i = 1; i <= 1000; i++ ) {
+                for ( int i = 1; i <= 10000; i++ ) {
                     set1 = new IntSpan(r1);
                     set2 = new IntSpan(r2);
                     set1.intersect(set2).runlist();
@@ -158,7 +158,8 @@ public class IntSpanBenchmark {
 
     /*
     mvn clean verify
-    time java -jar target/jintspan-0.1.1-SNAPSHOT.jar benchmark
+    time java -jar target/jintspan-*.jar benchmark
+    java -XX:+UnlockCommercialFeatures -XX:+FlightRecorder -jar target/jintspan-*.jar file
      */
     public static void main(String[] args) {
         String jarName = new java.io.File(IntSpanBenchmark.class.getProtectionDomain()
