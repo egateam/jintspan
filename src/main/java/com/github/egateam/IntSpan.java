@@ -436,17 +436,25 @@ public class IntSpan {
     public IntSpan addRange(ArrayList<Integer> ranges) throws AssertionError {
         if ( ranges.size() % 2 != 0 ) throw new AssertionError("Number of ranges must be even");
 
-        for ( int i = 0; i < ranges.size() / 2; i++ ) {
-            int lower = ranges.get(i * 2);
-            int upper = ranges.get(i * 2 + 1);
+        // When this IntSpan is empty, just convert ranges to edges
+        if ( isEmpty() ) {
+            edges.addAll(ranges);
+            for ( int i = 0; i < edges.size() / 2; i++ ) {
+                int idx = i * 2 + 1;
+                edges.set(idx, edges.get(idx) + 1);
+            }
+        } else {
+            edges.ensureCapacity(ranges.size());
+            for ( int i = 0; i < ranges.size() / 2; i++ ) {
+                int lower = ranges.get(i * 2);
+                int upper = ranges.get(i * 2 + 1);
 
-            addPair(lower, upper);
+                addPair(lower, upper);
+            }
         }
 
         return this;
     }
-
-    // TODO: When this IntSpan is empty, just convert ranges to edges
 
     /**
      * Merges the members of the supplied set into this set.
