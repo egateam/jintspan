@@ -18,7 +18,7 @@ public class IntSpanBenchmark {
 
     // don't use Jackson to avoid adding dependence
     private static class RunFile {
-        void run() {
+        void run(int times) {
             String r1 = readFile("/r1.yml");
             String r2 = readFile("/r2.yml");
 
@@ -34,7 +34,7 @@ public class IntSpanBenchmark {
                 step++;
 
                 long start = System.nanoTime();
-                for ( int i = 1; i <= 1000; i++ ) {
+                for ( int i = 1; i <= 100 * times; i++ ) {
                     new IntSpan(r1);
                     new IntSpan(r2);
                 }
@@ -48,7 +48,7 @@ public class IntSpanBenchmark {
                 step++;
 
                 long start = System.nanoTime();
-                for ( int i = 1; i <= 10000; i++ ) {
+                for ( int i = 1; i <= 1000 * times; i++ ) {
                     set1 = new IntSpan(r1);
                     set2 = new IntSpan(r2);
                     set1.intersect(set2);
@@ -62,7 +62,7 @@ public class IntSpanBenchmark {
                 System.out.printf("step %d intersect runlist\n", step);
 
                 long start = System.nanoTime();
-                for ( int i = 1; i <= 10000; i++ ) {
+                for ( int i = 1; i <= 1000 * times; i++ ) {
                     set1 = new IntSpan(r1);
                     set2 = new IntSpan(r2);
                     set1.intersect(set2).runlist();
@@ -75,8 +75,8 @@ public class IntSpanBenchmark {
         }
 
         String readFile(String filename) {
-            String content = "";
-            InputStream in = getClass().getResourceAsStream(filename);
+            String      content = "";
+            InputStream in      = getClass().getResourceAsStream(filename);
 
             try ( BufferedReader reader = new BufferedReader(new InputStreamReader(in)) ) {
                 String line;
@@ -159,7 +159,7 @@ public class IntSpanBenchmark {
     /*
     mvn clean verify
     time java -jar target/jintspan-*.jar benchmark
-    java -XX:+UnlockCommercialFeatures -XX:+FlightRecorder -jar target/jintspan-*.jar file
+    time java -jar target/jintspan-*.jar file 50
      */
     public static void main(String[] args) {
         String jarName = new java.io.File(IntSpanBenchmark.class.getProtectionDomain()
@@ -168,14 +168,18 @@ public class IntSpanBenchmark {
             .getPath())
             .getName();
         String prefix = "java -jar " + jarName;
-        String usage = String.format("Usage:\n    %s benchmark\n    %s file\n", prefix, prefix);
+        String usage  = String.format("Usage:\n    %s benchmark\n    %s file\n", prefix, prefix);
 
         if ( args.length == 0 ) {
             System.err.print(usage);
         } else if ( Objects.equals(args[0], "benchmark") ) {
             new RunBenchmark().run();
         } else if ( Objects.equals(args[0], "file") ) {
-            new RunFile().run();
+            int times = 1;
+            if ( args.length > 1 ) {
+                times = Integer.parseInt(args[1]);
+            }
+            new RunFile().run(times);
         } else {
             System.err.printf("Unrecognized command %s", args[0]);
         }
