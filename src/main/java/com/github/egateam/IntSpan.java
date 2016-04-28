@@ -411,7 +411,7 @@ public class IntSpan {
         if ( (upperPos & 1) == 1 ) {
             upper = edges.get(upperPos++);
         }
-        
+
 //        for ( int i = lowerPos; i < upperPos; i++ ) {
 //            edges.remove(lowerPos);
 //        }
@@ -492,8 +492,6 @@ public class IntSpan {
     }
 
     public IntSpan add(String runlist) {
-        runlist = stripWhitespace(runlist);
-
         // skip empty set
         if ( !runlist.equals("") && !runlist.equals(emptyString) ) {
             addRange(runlistToRanges(runlist));
@@ -605,8 +603,6 @@ public class IntSpan {
     }
 
     public IntSpan remove(String runlist) {
-        runlist = stripWhitespace(runlist);
-
         // empty set
         if ( !runlist.equals("") && !runlist.equals(emptyString) ) {
             removeRange(runlistToRanges(runlist));
@@ -1061,18 +1057,6 @@ public class IntSpan {
         }
 
         return ranges;
-    }
-
-    // TODO: Remove stripWhitespace.
-    private static String stripWhitespace(String string) {
-        String result = "";
-
-        String[] str = string.split("\\s");
-        for ( String s : str ) {
-            result += s;
-        }
-
-        return result;
     }
 
     // TODO: Try a regex approach

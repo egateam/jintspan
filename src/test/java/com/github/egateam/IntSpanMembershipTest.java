@@ -25,18 +25,18 @@ public class IntSpanMembershipTest {
 
     private static String[][] added =
         {
-            {"1    ", "2    ", "3    ", "4    "},
-            {"1    ", "1-2  ", "1,3  ", "1,4  "},
-            {"1-2  ", "1-2  ", "1-3  ", "1-2,4"},
-            {"1,3-5", "1-5  ", "1,3-5", "1,3-5"},
+            {"1", "2", "3", "4"},
+            {"1", "1-2", "1,3", "1,4"},
+            {"1-2", "1-2", "1-3", "1-2,4"},
+            {"1,3-5", "1-5", "1,3-5", "1,3-5"},
         };
 
     private static String[][] removed =
         {
-            {"-    ", "-    ", "-    ", "-    "},
-            {"-    ", "1    ", "1    ", "1    "},
-            {"2    ", "1    ", "1-2  ", "1-2  "},
-            {"3-5  ", "1,3-5", "1,4-5", "1,3,5"},
+            {"-", "-", "-", "-"},
+            {"-", "1", "1", "1"},
+            {"2", "1", "1-2", "1-2"},
+            {"3-5", "1,3-5", "1,4-5", "1,3,5"},
         };
 
     @Test(description = "Test membership")
@@ -48,8 +48,8 @@ public class IntSpanMembershipTest {
 
                 int n = j + 1;
 
-                IntSpan set = new IntSpan(sets[i]);
-                IntSpan setAdded = set.copy().add(n);
+                IntSpan set        = new IntSpan(sets[i]);
+                IntSpan setAdded   = set.copy().add(n);
                 IntSpan setRemoved = set.copy().remove(n);
 
                 // contains
