@@ -45,10 +45,10 @@ public class IntSpanSpanOPs3Test {
     public void testSpanOPs() {
 
         for ( TestData t : tests ) {
-            Assert.assertEquals(new IntSpan(t.runlist).excise(t.n).asString(), t.expExcise,
+            Assert.assertEquals(new IntSpan(t.runlist).excise(t.n).toString(), t.expExcise,
                 String.format("Test excise %s %d", t.runlist, t.n));
 
-            Assert.assertEquals(new IntSpan(t.runlist).fill(t.n).asString(), t.expFill,
+            Assert.assertEquals(new IntSpan(t.runlist).fill(t.n).toString(), t.expFill,
                 String.format("Test fill %s %d", t.runlist, t.n));
         }
     }

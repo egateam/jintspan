@@ -49,16 +49,12 @@ public class IntSpanCreateTest {
     public void testCreationRunlist() {
 
         for ( TestData t : tests ) {
-            ArrayList<Integer> array = new ArrayList<>();
-            for ( int i : t.elements ) {
-                array.add(i);
-            }
             String message = "Test " + t.input;
 
             IntSpan set = new IntSpan(t.input);
             Assert.assertEquals(set.cardinality(), t.elements.length, message);
-            Assert.assertEquals(set.asString(), t.runlist, message);
-            Assert.assertEquals(set.asArray(), array, message);
+            Assert.assertEquals(set.toString(), t.runlist, message);
+            Assert.assertEquals(set.toArray(), t.elements, message);
 
 //            // rToR
 //            if ( !t.runlist.isEmpty() && !t.runlist.equals("-") ) {
@@ -70,7 +66,7 @@ public class IntSpanCreateTest {
             Assert.assertEquals(set.size(), t.elements.length, message);
             Assert.assertEquals(set.count(), t.elements.length, message);
             Assert.assertEquals(set1.runlist(), t.runlist, message);
-            Assert.assertEquals(set1.elements(), array, message);
+            Assert.assertEquals(set1.elements(), t.elements, message);
 
         }
     }
@@ -82,13 +78,12 @@ public class IntSpanCreateTest {
 
             IntSpan set = new IntSpan(1);
 
-            String             expectedString = "1";
-            ArrayList<Integer> expectedArray  = new ArrayList<>();
-            expectedArray.add(1);
+            String expectedString = "1";
+            int[]  expectedArray  = new int[]{1};
 
             Assert.assertEquals(set.cardinality(), 1, message);
-            Assert.assertEquals(set.asString(), expectedString, message);
-            Assert.assertEquals(set.asArray(), expectedArray, message);
+            Assert.assertEquals(set.toString(), expectedString, message);
+            Assert.assertEquals(set.toArray(), expectedArray, message);
         }
     }
 

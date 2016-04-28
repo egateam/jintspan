@@ -61,20 +61,20 @@ public class IntSpanBinaryTest {
             IntSpan B       = new IntSpan(t.B);
 
             // union
-            Assert.assertEquals(A.union(B).asString(), new IntSpan(t.U).asString(), message + " union");
+            Assert.assertEquals(A.union(B).toString(), new IntSpan(t.U).toString(), message + " union");
 
             // intersect
-            Assert.assertEquals(A.intersect(B).asString(), new IntSpan(t.I).asString(), message + " intersect");
-            Assert.assertEquals(A.intersection(B).asString(), new IntSpan(t.I).asString(), message + " intersection");
+            Assert.assertEquals(A.intersect(B).toString(), new IntSpan(t.I).toString(), message + " intersect");
+            Assert.assertEquals(A.intersection(B).toString(), new IntSpan(t.I).toString(), message + " intersection");
 
             // xor
-            Assert.assertEquals(A.xor(B).asString(), new IntSpan(t.X).asString(), message + " xor");
+            Assert.assertEquals(A.xor(B).toString(), new IntSpan(t.X).toString(), message + " xor");
 
             // diff A-B
-            Assert.assertEquals(A.diff(B).asString(), new IntSpan(t.AB).asString(), message + " diff A-B");
+            Assert.assertEquals(A.diff(B).toString(), new IntSpan(t.AB).toString(), message + " diff A-B");
 
             // diff B-A
-            Assert.assertEquals(B.diff(A).asString(), new IntSpan(t.BA).asString(), message + " diff B-A");
+            Assert.assertEquals(B.diff(A).toString(), new IntSpan(t.BA).toString(), message + " diff B-A");
         }
     }
 }
