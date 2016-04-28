@@ -637,7 +637,6 @@ public class IntSpan {
         return newSet;
     }
 
-    // TODO: when supplied IntSpan larger than this, swap
 
     /**
      * Returns a new set that is the union (并集) of this set and the supplied set.
@@ -648,7 +647,6 @@ public class IntSpan {
     public IntSpan union(IntSpan supplied) {
         IntSpan newSet = copy();
         newSet.merge(supplied);
-
         return newSet;
     }
 
@@ -684,6 +682,7 @@ public class IntSpan {
         }
     }
 
+
     /**
      * Returns a new set that is the intersection (交集) of this set and the supplied set.
      *
@@ -691,15 +690,31 @@ public class IntSpan {
      * @return the intersection of this set and the supplied set
      */
     public IntSpan intersect(IntSpan supplied) {
-        if ( isEmpty() ) {
+        if ( this.isEmpty() || supplied.isEmpty() ) {
             return new IntSpan();
-        } else {
-            IntSpan newSet = complement();
-            newSet.merge(supplied.complement());
-            newSet.invert();
-
-            return newSet;
         }
+
+        // when supplied IntSpan larger than this, swap
+        // no good effects
+//        if ( this.edgeSize() > supplied.edgeSize() ) {
+//            IntSpan newSet = complement();
+//            newSet.merge(supplied.complement());
+//            newSet.invert();
+//
+//            return newSet;
+//        } else {
+//            IntSpan newSet = supplied.complement();
+//            newSet.merge(this.complement());
+//            newSet.invert();
+//
+//            return newSet;
+//        }
+
+        IntSpan newSet = complement();
+        newSet.merge(supplied.complement());
+        newSet.invert();
+
+        return newSet;
     }
 
     /**
@@ -1071,8 +1086,8 @@ public class IntSpan {
         ArrayList<Integer> ranges = new ArrayList<>();
 
         int radix = 10;
-        int idx = 0; // index in runlist
-        int len = s.length();
+        int idx   = 0; // index in runlist
+        int len   = s.length();
 
         boolean lowerNeg = false;
         boolean upperNeg = false;
