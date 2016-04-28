@@ -17,7 +17,7 @@ public class IntSpanCreateTest {
     private static class TestData {
         String input;
         String runlist;
-        int[] elements;
+        int[]  elements;
 
         TestData(String input, String runlist, int[] elements) {
             this.input = input;
@@ -32,12 +32,13 @@ public class IntSpanCreateTest {
             new TestData("-", "-", new int[]{}),
             new TestData("0", "0", new int[]{0}),
             new TestData("1", "1", new int[]{1}),
-            new TestData("1-1", "1", new int[]{1}),
             new TestData("-1", "-1", new int[]{-1}),
             new TestData("1-2", "1-2", new int[]{1, 2}),
             new TestData("-2--1", "-2--1", new int[]{-2, -1}),
             new TestData("-2-1", "-2-1", new int[]{-2, -1, 0, 1}),
+            new TestData("1,3-4", "1,3-4", new int[]{1, 3, 4}),
 
+//            new TestData("1-1", "1", new int[]{1}),
 //            new TestData("1,2-4", "1-4", new int[]{1, 2, 3, 4}),
 //            new TestData("1-3,4,5-7", "1-7", new int[]{1, 2, 3, 4, 5, 6, 7}),
 //            new TestData("1-3,4", "1-4", new int[]{1, 2, 3, 4}),
@@ -59,12 +60,18 @@ public class IntSpanCreateTest {
             Assert.assertEquals(set.asString(), t.runlist, message);
             Assert.assertEquals(set.asArray(), array, message);
 
+//            // rToR
+//            if ( !t.runlist.isEmpty() && !t.runlist.equals("-") ) {
+//                Assert.assertEquals(set.ranges(), IntSpan.rToR(t.runlist), message);
+//            }
+
             // aliases
             IntSpan set1 = new IntSpan(set.copy());
             Assert.assertEquals(set.size(), t.elements.length, message);
             Assert.assertEquals(set.count(), t.elements.length, message);
             Assert.assertEquals(set1.runlist(), t.runlist, message);
             Assert.assertEquals(set1.elements(), array, message);
+
         }
     }
 
@@ -75,8 +82,8 @@ public class IntSpanCreateTest {
 
             IntSpan set = new IntSpan(1);
 
-            String expectedString = "1";
-            ArrayList<Integer> expectedArray = new ArrayList<>();
+            String             expectedString = "1";
+            ArrayList<Integer> expectedArray  = new ArrayList<>();
             expectedArray.add(1);
 
             Assert.assertEquals(set.cardinality(), 1, message);
