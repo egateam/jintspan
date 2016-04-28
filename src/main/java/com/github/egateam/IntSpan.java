@@ -411,12 +411,14 @@ public class IntSpan {
         if ( (upperPos & 1) == 1 ) {
             upper = edges.get(upperPos++);
         }
+        
+//        for ( int i = lowerPos; i < upperPos; i++ ) {
+//            edges.remove(lowerPos);
+//        }
 
 //        http://java-performance.info/arraylist-performance/
-        // TODO: subList(int, int).clear()
-        for ( int i = lowerPos; i < upperPos; i++ ) {
-            edges.remove(lowerPos);
-        }
+        edges.subList(lowerPos, upperPos).clear();
+
         edges.add(lowerPos, lower);
         edges.add(lowerPos + 1, upper);
 
@@ -434,9 +436,10 @@ public class IntSpan {
     public IntSpan addRange(ArrayList<Integer> ranges) throws AssertionError {
         if ( ranges.size() % 2 != 0 ) throw new AssertionError("Number of ranges must be even");
 
-        while ( ranges.size() > 0 ) {
-            int lower = ranges.remove(0);
-            int upper = ranges.remove(0);
+        for ( int i = 0; i < ranges.size() / 2; i++ ) {
+            int lower = ranges.get(i * 2);
+            int upper = ranges.get(i * 2 + 1);
+
             addPair(lower, upper);
         }
 
