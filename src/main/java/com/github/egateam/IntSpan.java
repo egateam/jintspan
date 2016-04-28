@@ -493,7 +493,7 @@ public class IntSpan {
 
     public IntSpan add(String runlist) {
         // skip empty set
-        if ( !runlist.equals("") && !runlist.equals(emptyString) ) {
+        if ( !runlist.isEmpty() && !runlist.equals(emptyString) ) {
             addRange(runlistToRanges(runlist));
         }
 
@@ -604,7 +604,7 @@ public class IntSpan {
 
     public IntSpan remove(String runlist) {
         // empty set
-        if ( !runlist.equals("") && !runlist.equals(emptyString) ) {
+        if ( !runlist.isEmpty() && !runlist.equals(emptyString) ) {
             removeRange(runlistToRanges(runlist));
         }
 
@@ -1072,7 +1072,7 @@ public class IntSpan {
             String[]           str2  = s.split("-");
             ArrayList<Integer> range = new ArrayList<>();
             for ( String s2 : str2 ) {
-                if ( !s2.equals("") ) {
+                if ( !s2.isEmpty() ) {
                     range.add(Integer.parseInt(s2));
                 }
             }
