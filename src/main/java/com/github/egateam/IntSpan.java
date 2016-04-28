@@ -1067,53 +1067,115 @@ public class IntSpan {
         return ranges;
     }
 
-    // TODO: Try a regex approach
-    // consume 49.1% memory in file benchmark
-    private ArrayList<Integer> runlistToRanges(String runlist) throws AssertionError {
+    private static ArrayList<Integer> runlistToRanges(String s) {
         ArrayList<Integer> ranges = new ArrayList<>();
 
-        String[] str = runlist.split(",");
-        for ( String s : str ) {
-            boolean lowerIsNeg = s.startsWith("-");
-            boolean upperIsNeg = s.contains("--");
+        int radix = 10;
+        int idx = 0; // index in runlist
+        int len = s.length();
 
-            String[]           str2  = s.split("-");
-            ArrayList<Integer> range = new ArrayList<>();
-            for ( String s2 : str2 ) {
-                if ( !s2.isEmpty() ) {
-                    range.add(Integer.parseInt(s2));
+        boolean lowerNeg = false;
+        boolean upperNeg = false;
+        boolean inUpper  = false;
+
+        while ( idx < len ) {
+            int i = 0; // index in one run
+            if ( s.charAt(idx) == '-' ) {
+                lowerNeg = true;
+                i++;
+            }
+
+            // Integer.parseInt() say this:
+            // Accumulating negatively avoids surprises near MAX_VALUE
+            int lower = 0, upper = 0;
+            for ( ; idx + i < len; i++ ) {
+                char ch = s.charAt(idx + i);
+                if ( ch >= '0' && ch <= '9' ) {
+                    if ( !inUpper ) {
+
+                        lower *= radix;
+                        lower -= Character.digit(ch, radix);
+                    } else {
+                        upper *= radix;
+                        upper -= Character.digit(ch, radix);
+                    }
+                } else if ( ch == '-' && !inUpper ) {
+                    inUpper = true;
+                    if ( s.charAt(idx + i + 1) == '-' ) {
+                        upperNeg = true;
+                    }
+                } else if ( ch == ',' ) {
+                    i++;
+                    break; // end of run
                 }
             }
 
-            int lower, upper;
-
-            if ( range.size() == 1 ) {
-                lower = range.get(0);
-                if ( lowerIsNeg ) {
-                    lower = -lower;
-                }
-                upper = lower;
-            } else if ( range.size() == 2 ) {
-                lower = range.get(0);
-                if ( lowerIsNeg ) {
-                    lower = -lower;
-                }
-
-                upper = range.get(1);
-                if ( upperIsNeg ) {
-                    upper = -upper;
-                }
+            if ( !inUpper ) {
+                ranges.add(lowerNeg ? lower : -lower); // add lower
+                ranges.add(lowerNeg ? lower : -lower); // add lower again
             } else {
-                throw new AssertionError(String.format("Single run errors [%s]. Size of tokens is %d", s, range.size()));
+                ranges.add(lowerNeg ? lower : -lower); // add lower
+                ranges.add(upperNeg ? upper : -upper); // add upper
             }
 
-            if ( lower > upper ) throw new AssertionError(String.format("Bad order [%s]", s));
-            ranges.add(lower);
-            ranges.add(upper);
+            // reset boolean flags
+            lowerNeg = false;
+            upperNeg = false;
+            inUpper = false;
+
+            // start next run
+            idx += i;
         }
 
         return ranges;
     }
+
+//    // consume 49.1% memory in file benchmark
+//    private static ArrayList<Integer> runlistToRanges(String runlist) throws AssertionError {
+//        ArrayList<Integer> ranges = new ArrayList<>();
+//
+//        String[] str = runlist.split(",");
+//        for ( String s : str ) {
+//            boolean lowerNeg = s.startsWith("-");
+//            boolean upperNeg = s.contains("--");
+//
+//            String[]           str2  = s.split("-");
+//            ArrayList<Integer> range = new ArrayList<>();
+//            for ( String s2 : str2 ) {
+//                if ( !s2.isEmpty() ) {
+//                    range.add(Integer.parseInt(s2));
+//                }
+//            }
+//
+//            int lower, upper;
+//
+//            if ( range.size() == 1 ) {
+//                lower = range.get(0);
+//                if ( lowerNeg ) {
+//                    lower = -lower;
+//                }
+//                upper = lower;
+//            } else if ( range.size() == 2 ) {
+//                lower = range.get(0);
+//                if ( lowerNeg ) {
+//                    lower = -lower;
+//                }
+//
+//                upper = range.get(1);
+//                if ( upperNeg ) {
+//                    upper = -upper;
+//                }
+//            } else {
+//                throw new AssertionError(String.format("Single run errors [%s]. Size of tokens is %d", s, range.size()));
+//            }
+//
+//            if ( lower > upper ) throw new AssertionError(String.format("Bad order [%s]", s));
+//            ranges.add(lower);
+//            ranges.add(upper);
+//        }
+//
+//        return ranges;
+//    }
 
     /**
      * Return the index of the first element >= the supplied value.
