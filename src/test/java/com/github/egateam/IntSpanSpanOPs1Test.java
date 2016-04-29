@@ -40,10 +40,10 @@ public class IntSpanSpanOPs1Test {
 
         for ( TestData t : tests ) {
 
-            Assert.assertEquals(new IntSpan(t.runlist).cover().asString(), new IntSpan(t.expCover).asString(),
+            Assert.assertEquals(new IntSpan(t.runlist).cover().toString(), new IntSpan(t.expCover).toString(),
                 String.format("Test cover %s %s", t.runlist, t.expCover));
 
-            Assert.assertEquals(new IntSpan(t.runlist).holes().asString(), new IntSpan(t.expHoles).asString(),
+            Assert.assertEquals(new IntSpan(t.runlist).holes().toString(), new IntSpan(t.expHoles).toString(),
                 String.format("Test holes %s %s", t.runlist, t.expHoles));
 
         }

@@ -56,17 +56,17 @@ public class IntSpanMembershipTest {
                 Assert.assertEquals(set.contains(n), contains[i][j] != 0, message + " contains");
 
                 // added
-                Assert.assertEquals(setAdded.asString(), new IntSpan(added[i][j]).asString(), message + " added");
+                Assert.assertEquals(setAdded.toString(), new IntSpan(added[i][j]).toString(), message + " added");
                 if ( set.isNotEmpty() ) {
-                    Assert.assertTrue(set.containsAny(setAdded.asArray()), message + " added containsAny");
+                    Assert.assertTrue(set.containsAny(setAdded.toArray()), message + " added containsAny");
                 }
-                containsAll = containsAll && set.containsAll(setAdded.asArray()); // shouldn't all be true
+                containsAll = containsAll && set.containsAll(setAdded.toArray()); // shouldn't all be true
 
                 // removed
-                Assert.assertEquals(setRemoved.asString(), new IntSpan(removed[i][j]).asString(), message + " removed");
-                Assert.assertTrue(set.containsAll(setRemoved.asArray()), message + " removed containsAll");
+                Assert.assertEquals(setRemoved.toString(), new IntSpan(removed[i][j]).toString(), message + " removed");
+                Assert.assertTrue(set.containsAll(setRemoved.toArray()), message + " removed containsAll");
                 if ( set.isNotEmpty() && setRemoved.isNotEmpty() ) {
-                    containsAny = containsAny && set.containsAny(setRemoved.asArray()); // should all be true
+                    containsAny = containsAny && set.containsAny(setRemoved.toArray()); // should all be true
                 }
             }
         }

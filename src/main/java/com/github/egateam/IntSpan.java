@@ -16,8 +16,9 @@
 
 package com.github.egateam;
 
-import java.util.ArrayList;
-import java.util.Collections;
+import com.carrotsearch.hppc.IntArrayList;
+
+import java.util.Arrays;
 
 @SuppressWarnings("WeakerAccess")
 public class IntSpan {
@@ -28,7 +29,7 @@ public class IntSpan {
     private static final int negInf = -2147483648 + 1; // INT_MIN + 1
 
     // TODO: Try HPPC
-    private ArrayList<Integer> edges = new ArrayList<>();
+    private IntArrayList edges = new IntArrayList();
 
     //----------------------------------------------------------
     // Constructors
@@ -69,21 +70,12 @@ public class IntSpan {
     }
 
     /**
-     * Constructs a set with all elements in ArrayList.
-     *
-     * @param list integer list to add to this set
-     */
-    public IntSpan(ArrayList<Integer> list) {
-        add(list);
-    }
-
-    /**
      * Constructs a copy set of the supplied set.
      *
      * @param supplied the supplied set
      */
     public IntSpan(IntSpan supplied) {
-        edges = new ArrayList<>(supplied.getEdges());
+        edges = new IntArrayList(supplied.getEdges());
     }
 
     /**
@@ -136,7 +128,7 @@ public class IntSpan {
      * @return this set for method chaining
      */
     public IntSpan clear() {
-        edges = new ArrayList<>();
+        edges = new IntArrayList();
 
         return this;
     }
@@ -148,7 +140,7 @@ public class IntSpan {
      *
      * @return the internal used ArrayList representing this set
      */
-    private ArrayList<Integer> getEdges() {
+    private IntArrayList getEdges() {
         return edges;
     }
 
@@ -175,7 +167,8 @@ public class IntSpan {
      *
      * @return a string representation of this set
      */
-    public String asString() {
+    @Override
+    public String toString() {
         if ( isEmpty() ) {
             return emptyString;
         }
@@ -208,23 +201,26 @@ public class IntSpan {
      *
      * @return an ArrayList containing all elements of this set in ascending order
      */
-    public ArrayList<Integer> asArray() {
-        ArrayList<Integer> array = new ArrayList<>();
+    public int[] toArray() {
+        IntArrayList list = new IntArrayList();
         if ( isEmpty() ) {
-            return array;
+            return list.toArray();
         }
 
         for ( int i = 0; i < spanSize(); i++ ) {
             int lower = edges.get(i * 2);
             int upper = edges.get(i * 2 + 1) - 1;
 
-            for ( int n = lower; n <= upper; n++ ) {
-                array.add(n);
+            int   spanSize     = upper - lower + 1;
+            int[] spanElements = new int[spanSize];
+            for ( int j = 0; j < spanSize; j++ ) {
+                spanElements[j] = lower + j;
             }
 
+            list.add(spanElements);
         }
 
-        return array;
+        return list.toArray();
     }
 
     /**
@@ -232,17 +228,14 @@ public class IntSpan {
      *
      * @return the runs in this set, as a list of (lower, upper)
      */
-    public ArrayList<Integer> ranges() {
-        ArrayList<Integer> ranges = new ArrayList<>();
-        if ( isEmpty() ) {
-            return ranges;
-        }
+    public IntArrayList ranges() {
+        IntArrayList ranges = edges.clone();
 
-        for ( int i = 0; i < spanSize(); i++ ) {
-            int lower = edges.get(i * 2);
-            int upper = edges.get(i * 2 + 1) - 1;
-            ranges.add(lower);
-            ranges.add(upper);
+        for ( int i = 0; i < ranges.size(); i++ ) {
+            // odd index means upper
+            if ( (i & 1) == 1 ) {
+                ranges.set(i, ranges.get(i) - 1);
+            }
         }
         return ranges;
     }
@@ -341,11 +334,11 @@ public class IntSpan {
     /**
      * Returns <tt>true</tt> if this set contains all of the specified numbers.
      *
-     * @param list the specified numbers
+     * @param ints the specified numbers
      * @return <tt>true</tt> if this set contains all of the specified numbers
      */
-    public boolean containsAll(ArrayList<Integer> list) {
-        for ( int i : list ) {
+    public boolean containsAll(int[] ints) {
+        for ( int i : ints ) {
             int pos = findPos(i + 1, 0);
             if ( (pos & 1) != 1 ) {
                 return false;
@@ -369,11 +362,11 @@ public class IntSpan {
     /**
      * Returns <tt>true</tt> if this set contains any of the specified numbers.
      *
-     * @param list the specified numbers
+     * @param ints the specified numbers
      * @return <tt>true</tt> if this set contains any of the specified numbers
      */
-    public boolean containsAny(ArrayList<Integer> list) {
-        for ( int i : list ) {
+    public boolean containsAny(int[] ints) {
+        for ( int i : ints ) {
             int pos = findPos(i + 1, 0);
             if ( (pos & 1) == 1 ) {
                 return true;
@@ -412,15 +405,9 @@ public class IntSpan {
             upper = edges.get(upperPos++);
         }
 
-//        for ( int i = lowerPos; i < upperPos; i++ ) {
-//            edges.remove(lowerPos);
-//        }
-
-//        http://java-performance.info/arraylist-performance/
-        edges.subList(lowerPos, upperPos).clear();
-
-        edges.add(lowerPos, lower);
-        edges.add(lowerPos + 1, upper);
+        edges.removeRange(lowerPos, upperPos);
+        edges.insert(lowerPos, lower);
+        edges.insert(lowerPos + 1, upper);
 
         return this;
     }
@@ -433,7 +420,7 @@ public class IntSpan {
      * @param ranges the inclusive ranges of integers (ranges.size() must be even)
      * @return this set for method chaining
      */
-    public IntSpan addRange(ArrayList<Integer> ranges) throws AssertionError {
+    public IntSpan addRange(IntArrayList ranges) throws AssertionError {
         if ( ranges.size() % 2 != 0 ) throw new AssertionError("Number of ranges must be even");
 
         // When this IntSpan is empty, just convert ranges to edges
@@ -463,7 +450,7 @@ public class IntSpan {
      * @return this set for method chaining
      */
     public IntSpan merge(IntSpan supplied) {
-        ArrayList<Integer> ranges = supplied.ranges();
+        IntArrayList ranges = supplied.ranges();
         addRange(ranges);
 
         return this;
@@ -476,18 +463,7 @@ public class IntSpan {
     }
 
     public IntSpan add(int[] array) {
-        ArrayList<Integer> list = new ArrayList<>();
-        for ( int i : array ) {
-            list.add(i);
-        }
-        ArrayList<Integer> ranges = listToRanges(list);
-        addRange(ranges);
-
-        return this;
-    }
-
-    public IntSpan add(ArrayList<Integer> list) {
-        ArrayList<Integer> ranges = listToRanges(list);
+        IntArrayList ranges = listToRanges(array);
         addRange(ranges);
 
         return this;
@@ -522,9 +498,8 @@ public class IntSpan {
     public IntSpan invert() {
         if ( isEmpty() ) {
             // Universal set
-            edges = new ArrayList<>();
-            edges.add(negInf);
-            edges.add(posInf);
+            edges = new IntArrayList();
+            edges.add(negInf, posInf);
         } else {
             // Either add or remove infinity from each end. The net effect is always an even number
             // of additions and deletions
@@ -532,7 +507,7 @@ public class IntSpan {
             if ( isNegInf() ) {
                 edges.remove(0); // shift
             } else {
-                edges.add(0, negInf); // unshift
+                edges.insert(0, negInf); // unshift
             }
 
             if ( isPosInf() ) {
@@ -568,7 +543,7 @@ public class IntSpan {
      * @param ranges the inclusive ranges of integers (ranges.size() must be even)
      * @return this set for method chaining
      */
-    public IntSpan removeRange(ArrayList<Integer> ranges) throws AssertionError {
+    public IntSpan removeRange(IntArrayList ranges) throws AssertionError {
         if ( ranges.size() % 2 != 0 ) throw new AssertionError("Number of ranges must be even");
 
         invert();
@@ -585,7 +560,7 @@ public class IntSpan {
      * @return this set for method chaining
      */
     public IntSpan subtract(IntSpan supplied) {
-        ArrayList<Integer> ranges = supplied.ranges();
+        IntArrayList ranges = supplied.ranges();
         removeRange(ranges);
 
         return this;
@@ -597,8 +572,8 @@ public class IntSpan {
         return this;
     }
 
-    public IntSpan remove(ArrayList<Integer> list) {
-        ArrayList<Integer> ranges = listToRanges(list);
+    public IntSpan remove(int[] ints) {
+        IntArrayList ranges = listToRanges(ints);
         removeRange(ranges);
 
         return this;
@@ -632,11 +607,10 @@ public class IntSpan {
     public IntSpan copy() {
         IntSpan newSet = new IntSpan();
 
-        newSet.edges = new ArrayList<>(edges);
+        newSet.edges = edges.clone();
 
         return newSet;
     }
-
 
     /**
      * Returns a new set that is the union (并集) of this set and the supplied set.
@@ -681,7 +655,6 @@ public class IntSpan {
             return newSet;
         }
     }
-
 
     /**
      * Returns a new set that is the intersection (交集) of this set and the supplied set.
@@ -743,8 +716,8 @@ public class IntSpan {
      * @return <tt>true</tt> if this set and the supplied set contain the same elements
      */
     public boolean equals(IntSpan supplied) {
-        ArrayList<Integer> edges_a = this.getEdges();
-        ArrayList<Integer> edges_b = supplied.getEdges();
+        IntArrayList edges_a = this.getEdges();
+        IntArrayList edges_b = supplied.getEdges();
 
         if ( edges_a.size() != edges_b.size() ) {
             return false;
@@ -934,8 +907,8 @@ public class IntSpan {
         if ( isEmpty() || isUniversal() ) { // empty and universal set have no holes
             return newSet;
         } else {
-            IntSpan            complementSet = complement();
-            ArrayList<Integer> ranges        = complementSet.ranges();
+            IntSpan      complementSet = complement();
+            IntArrayList ranges        = complementSet.ranges();
 
             // Remove infinite arms of complement set
             if ( complementSet.isNegInf() ) {
@@ -1034,8 +1007,8 @@ public class IntSpan {
     public IntSpan fill(int maxLength) {
         IntSpan newSet = copy();
 
-        IntSpan            holesSet   = holes();
-        ArrayList<Integer> holesEdges = holesSet.getEdges();
+        IntSpan      holesSet   = holes();
+        IntArrayList holesEdges = holesSet.getEdges();
 
         for ( int i = 0; i < holesSet.spanSize(); i++ ) {
             int lower        = holesEdges.get(i * 2);
@@ -1062,28 +1035,28 @@ public class IntSpan {
     // Private methods
     //----------------------------------------------------------
 
-    private ArrayList<Integer> listToRanges(ArrayList<Integer> list) {
-        Collections.sort(list);
+    private IntArrayList listToRanges(int[] ints) {
+        Arrays.sort(ints);
 
-        ArrayList<Integer> ranges = new ArrayList<>();
-        int                count  = list.size();
-        int                pos    = 0;
+        IntArrayList ranges = new IntArrayList();
 
-        while ( pos < count ) {
+        int len = ints.length;
+        int pos = 0;
+
+        while ( pos < ints.length ) {
             int end = pos + 1;
-            while ( (end < count) && (list.get(end) <= list.get(end - 1) + 1) ) {
+            while ( (end < len) && (ints[end] <= ints[end - 1] + 1) ) {
                 end++;
             }
-            ranges.add(list.get(pos));
-            ranges.add(list.get(end - 1));
+            ranges.add(ints[pos], ints[end - 1]);
             pos = end;
         }
 
         return ranges;
     }
 
-    private static ArrayList<Integer> runlistToRanges(String s) {
-        ArrayList<Integer> ranges = new ArrayList<>();
+    private static IntArrayList runlistToRanges(String s) {
+        IntArrayList ranges = new IntArrayList();
 
         int radix = 10;
         int idx   = 0; // index in runlist
@@ -1234,16 +1207,11 @@ public class IntSpan {
     }
 
     public String runlist() {
-        return asString();
+        return toString();
     }
 
-    @Override
-    public String toString() {
-        return asString();
-    }
-
-    public ArrayList<Integer> elements() {
-        return asArray();
+    public int[] elements() {
+        return toArray();
     }
 
     public boolean equal(IntSpan supplied) {

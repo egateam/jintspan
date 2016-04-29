@@ -6,6 +6,8 @@
 
 package com.github.egateam;
 
+import com.carrotsearch.hppc.IntArrayList;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -105,7 +107,7 @@ public class IntSpanBenchmark {
         }
 
         void testAddRange(int step) {
-            ArrayList<Integer> vec1 = new ArrayList<>();
+            IntArrayList vec1 = new IntArrayList();
 
             for ( int i : new int[]{
                 1, 30,
@@ -123,7 +125,7 @@ public class IntSpanBenchmark {
                 vec1.add(i);
             }
 
-            ArrayList<Integer> vec2 = new ArrayList<>();
+            IntArrayList vec2 = new IntArrayList();
             vec2.add(100);
             vec2.add(1000000);
 
@@ -137,7 +139,7 @@ public class IntSpanBenchmark {
                     set.addRange(vec2);
                 }
                 if ( step >= 4 ) {
-                    set.asString();
+                    set.toString();
                 }
                 if ( step >= 5 ) {
                     for ( int j = 1; j <= 200; j++ ) {
@@ -146,7 +148,7 @@ public class IntSpanBenchmark {
                 }
                 if ( step >= 6 ) {
                     for ( int j = 1; j <= 200; j++ ) {
-                        ArrayList<Integer> vec3 = new ArrayList<>();
+                        IntArrayList vec3 = new IntArrayList();
                         vec3.add(j * 5);
                         vec3.add(j * 10);
                         set.addRange(vec3);
@@ -158,8 +160,8 @@ public class IntSpanBenchmark {
 
     /*
     mvn clean verify
-    time java -jar target/jintspan-*.jar benchmark
-    time java -jar target/jintspan-*.jar file 50
+    time java -jar target/jintspan-*-jar-with-dependencies.jar benchmark
+    time java -jar target/jintspan-*-jar-with-dependencies.jar file 50
      */
     public static void main(String[] args) {
         String jarName = new java.io.File(IntSpanBenchmark.class.getProtectionDomain()

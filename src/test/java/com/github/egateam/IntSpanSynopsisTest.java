@@ -6,6 +6,7 @@
 
 package com.github.egateam;
 
+import com.carrotsearch.hppc.IntArrayList;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -15,9 +16,9 @@ import java.util.Arrays;
 public class IntSpanSynopsisTest {
 
     private void testConstructors(IntSpan set) {
-        System.out.println(set.asString()); // 1-3,5,7,9,100-999,1001-10000
+        System.out.println(set.toString()); // 1-3,5,7,9,100-999,1001-10000
         String expected = "1-3,5,7,9,100-999,1001-10000";
-        Assert.assertEquals(set.asString(), expected);
+        Assert.assertEquals(set.toString(), expected);
         Assert.assertEquals(set.cardinality(), 9906);
 
         Assert.assertFalse(set.isEmpty());
@@ -55,23 +56,6 @@ public class IntSpanSynopsisTest {
         {
             IntSpan set = new IntSpan();
             set.add(new int[]{1, 2, 3, 5, 7, 9}).addPair(100, 10000).remove(1000);
-
-            testConstructors(set);
-        }
-
-        {
-            IntSpan set = new IntSpan();
-            set.add(new ArrayList<>(Arrays.asList(1, 2, 3, 5, 7, 9)));
-            set.addPair(100, 10000);
-            set.remove(1000);
-
-            testConstructors(set);
-        }
-
-        {
-            IntSpan set = new IntSpan(new ArrayList<>(Arrays.asList(1, 2, 3, 5, 7, 9)));
-            set.addPair(100, 10000);
-            set.remove(1000);
 
             testConstructors(set);
         }
@@ -124,8 +108,9 @@ public class IntSpanSynopsisTest {
             IntSpan set = new IntSpan();
             set.clear();
 
-            IntSpan set1000 = new IntSpan(1000);
-            ArrayList<Integer> ranges1000 = new ArrayList<>(Arrays.asList(1000, 1000));
+            IntSpan      set1000    = new IntSpan(1000);
+            IntArrayList ranges1000 = new IntArrayList();
+            ranges1000.add(1000, 1000);
 
             set.clear().
                 addPair(1, 3).add(5).add(7).add(9).addPair(100, 10000)
@@ -135,7 +120,6 @@ public class IntSpanSynopsisTest {
                 .add(1000).remove(1000)
                 .addRange(ranges1000).removeRange(ranges1000)
                 .addPair(1000, 1000).removePair(1000, 1000)
-                .add(ranges1000).remove(ranges1000)
                 .add("1000").remove("1000")
                 .add(set1000).remove(set1000)
                 .remove(1000);
@@ -147,9 +131,9 @@ public class IntSpanSynopsisTest {
         {
             IntSpan infSet = new IntSpan().invert();
 
-            System.out.println(infSet.asString());
+            System.out.println(infSet.toString());
             String expected = Integer.toString(IntSpan.getNegInf()) + "-" + Integer.toString(IntSpan.getPosInf());
-            Assert.assertEquals(infSet.asString(), expected);
+            Assert.assertEquals(infSet.toString(), expected);
 
             Assert.assertFalse(infSet.isEmpty());
             Assert.assertTrue(infSet.isNotEmpty());
@@ -167,9 +151,9 @@ public class IntSpanSynopsisTest {
             IntSpan posInfSet = new IntSpan();
             posInfSet.addPair(1, IntSpan.getPosInf());
 
-            System.out.println(posInfSet.asString());
+            System.out.println(posInfSet.toString());
             String expected = "1-" + Integer.toString(IntSpan.getPosInf());
-            Assert.assertEquals(posInfSet.asString(), expected);
+            Assert.assertEquals(posInfSet.toString(), expected);
 
             Assert.assertFalse(posInfSet.isEmpty());
             Assert.assertTrue(posInfSet.isNotEmpty());

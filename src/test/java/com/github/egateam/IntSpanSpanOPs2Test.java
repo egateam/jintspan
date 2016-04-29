@@ -54,7 +54,7 @@ public class IntSpanSpanOPs2Test {
     public void testSpanOPs() {
 
         for ( TestData t : tests ) {
-            Assert.assertEquals(new IntSpan(t.runlist).inset(t.n).asString(), t.expected,
+            Assert.assertEquals(new IntSpan(t.runlist).inset(t.n).toString(), t.expected,
                 String.format("Test inset %s %d", t.runlist, t.n));
         }
 
