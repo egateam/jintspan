@@ -90,26 +90,26 @@ duration 20.821079
 $ mvn clean verify
 $ command time -l java -jar target/jintspan-*-jar-with-dependencies.jar file 50
 step 1 create
-duration 1.401312
+duration 1.293469
 step 2 intersect
-duration 20.221913
+duration 16.917867
 step 3 intersect runlist
-duration 23.590840
-       45.32 real        46.00 user         0.26 sys
- 269979648  maximum resident set size
+duration 20.511756
+       38.84 real        39.33 user         0.29 sys
+ 504291328  maximum resident set size
          0  average shared memory size
          0  average unshared data size
          0  average unshared stack size
-     68709  page reclaims
-         0  page faults
+    125893  page reclaims
+         1  page faults
          0  swaps
          0  block input operations
-         3  block output operations
+         7  block output operations
          0  messages sent
          0  messages received
-         4  signals received
+         2  signals received
          0  voluntary context switches
-     35412  involuntary context switches
+     31818  involuntary context switches
 ```
 
 ## AUTHOR

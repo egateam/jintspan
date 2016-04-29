@@ -63,10 +63,10 @@ public class IntSpan {
     /**
      * Constructs a set with all elements in Array.
      *
-     * @param array integer array to add to this set
+     * @param ints integer array to add to this set
      */
-    public IntSpan(int[] array) {
-        add(array);
+    public IntSpan(int[] ints) {
+        add(ints);
     }
 
     /**
@@ -197,9 +197,9 @@ public class IntSpan {
     }
 
     /**
-     * Returns an ArrayList containing all elements of this set in ascending order.
+     * Returns an int[] containing all elements of this set in ascending order.
      *
-     * @return an ArrayList containing all elements of this set in ascending order
+     * @return an int[] containing all elements of this set in ascending order
      */
     public int[] toArray() {
         IntArrayList list = new IntArrayList();
@@ -425,10 +425,13 @@ public class IntSpan {
 
         // When this IntSpan is empty, just convert ranges to edges
         if ( isEmpty() ) {
-            edges.addAll(ranges);
-            for ( int i = 0; i < edges.size() / 2; i++ ) {
-                int idx = i * 2 + 1;
-                edges.set(idx, edges.get(idx) + 1);
+            edges = ranges.clone();
+
+            for ( int i = 0; i < edges.size(); i++ ) {
+                // odd index means upper
+                if ( (i & 1) == 1 ) {
+                    edges.set(i, edges.get(i) + 1);
+                }
             }
         } else {
             edges.ensureCapacity(ranges.size());
@@ -1035,7 +1038,7 @@ public class IntSpan {
     // Private methods
     //----------------------------------------------------------
 
-    private IntArrayList listToRanges(int[] ints) {
+    private static IntArrayList listToRanges(int[] ints) {
         Arrays.sort(ints);
 
         IntArrayList ranges = new IntArrayList();
@@ -1117,53 +1120,6 @@ public class IntSpan {
 
         return ranges;
     }
-
-//    // consume 49.1% memory in file benchmark
-//    private static ArrayList<Integer> runlistToRanges(String runlist) throws AssertionError {
-//        ArrayList<Integer> ranges = new ArrayList<>();
-//
-//        String[] str = runlist.split(",");
-//        for ( String s : str ) {
-//            boolean lowerNeg = s.startsWith("-");
-//            boolean upperNeg = s.contains("--");
-//
-//            String[]           str2  = s.split("-");
-//            ArrayList<Integer> range = new ArrayList<>();
-//            for ( String s2 : str2 ) {
-//                if ( !s2.isEmpty() ) {
-//                    range.add(Integer.parseInt(s2));
-//                }
-//            }
-//
-//            int lower, upper;
-//
-//            if ( range.size() == 1 ) {
-//                lower = range.get(0);
-//                if ( lowerNeg ) {
-//                    lower = -lower;
-//                }
-//                upper = lower;
-//            } else if ( range.size() == 2 ) {
-//                lower = range.get(0);
-//                if ( lowerNeg ) {
-//                    lower = -lower;
-//                }
-//
-//                upper = range.get(1);
-//                if ( upperNeg ) {
-//                    upper = -upper;
-//                }
-//            } else {
-//                throw new AssertionError(String.format("Single run errors [%s]. Size of tokens is %d", s, range.size()));
-//            }
-//
-//            if ( lower > upper ) throw new AssertionError(String.format("Bad order [%s]", s));
-//            ranges.add(lower);
-//            ranges.add(upper);
-//        }
-//
-//        return ranges;
-//    }
 
     /**
      * Return the index of the first element >= the supplied value.

@@ -7,7 +7,7 @@
 
     <groupId>com.github.egateam</groupId>
     <artifactId>jintspan</artifactId>
-    <version>0.2.0</version>
+    <version>0.2.1</version>
 
     <name>jintspan</name>
     <description>`IntSpan` handles of sets containing integer spans.</description>
