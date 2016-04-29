@@ -54,6 +54,64 @@ posInfSet.addPair(1, IntSpan.getPosInf());
 This Java class is ported from the Perl module `AlignDB::IntSpan` which contains many codes from
 `Set::IntSpan`, `Set::IntSpan::Fast` and `Set::IntSpan::Island`.
 
+## COMPARISON
+
+* ArrayList<Integer>
+
+```
+$ mvn clean verify
+$ command time -l java -jar target/jintspan-*.jar file 50
+step 1 create
+duration 1.200802
+step 2 intersect
+duration 17.512677
+step 3 intersect runlist
+duration 20.821079
+       39.65 real        40.48 user         0.30 sys
+ 402702336  maximum resident set size
+         0  average shared memory size
+         0  average unshared data size
+         0  average unshared stack size
+    101852  page reclaims
+         0  page faults
+         0  swaps
+         0  block input operations
+        10  block output operations
+         0  messages sent
+         0  messages received
+         2  signals received
+         0  voluntary context switches
+     33186  involuntary context switches
+```
+
+* IntArrayList from hppc
+
+```
+$ mvn clean verify
+$ command time -l java -jar target/jintspan-*-jar-with-dependencies.jar file 50
+step 1 create
+duration 1.401312
+step 2 intersect
+duration 20.221913
+step 3 intersect runlist
+duration 23.590840
+       45.32 real        46.00 user         0.26 sys
+ 269979648  maximum resident set size
+         0  average shared memory size
+         0  average unshared data size
+         0  average unshared stack size
+     68709  page reclaims
+         0  page faults
+         0  swaps
+         0  block input operations
+         3  block output operations
+         0  messages sent
+         0  messages received
+         4  signals received
+         0  voluntary context switches
+     35412  involuntary context switches
+```
+
 ## AUTHOR
 
 Qiang Wang &lt;wang-q@outlook.com&gt;
