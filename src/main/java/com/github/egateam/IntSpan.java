@@ -229,7 +229,7 @@ public class IntSpan {
      * @return the runs in this set, as a list of (lower, upper)
      */
     public IntArrayList ranges() {
-        IntArrayList ranges = new IntArrayList(edges);
+        IntArrayList ranges = edges.clone();
 
         for ( int i = 0; i < ranges.size(); i++ ) {
             // odd index means upper
@@ -607,7 +607,7 @@ public class IntSpan {
     public IntSpan copy() {
         IntSpan newSet = new IntSpan();
 
-        newSet.edges = new IntArrayList(edges);
+        newSet.edges = edges.clone();
 
         return newSet;
     }
