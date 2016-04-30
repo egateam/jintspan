@@ -9,8 +9,6 @@ package com.github.egateam;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import java.util.ArrayList;
-
 public class IntSpanCreateTest {
 
     @SuppressWarnings("CanBeFinal")

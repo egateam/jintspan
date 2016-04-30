@@ -10,9 +10,6 @@ import com.carrotsearch.hppc.IntArrayList;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-
 public class IntSpanSynopsisTest {
 
     private void testConstructors(IntSpan set) {
