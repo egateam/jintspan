@@ -54,6 +54,10 @@ posInfSet.addPair(1, IntSpan.getPosInf());
 This Java class is ported from the Perl module `AlignDB::IntSpan` which contains many codes from
 `Set::IntSpan`, `Set::IntSpan::Fast` and `Set::IntSpan::Island`.
 
+## DOCUMENTS
+
+* Github pages: http://egateam.github.io/jintspan/apidocs/index.html
+
 ## COMPARISON
 
 * ArrayList<Integer>
