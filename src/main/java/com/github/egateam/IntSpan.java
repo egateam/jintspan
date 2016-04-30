@@ -22,13 +22,13 @@ import java.util.Arrays;
 
 @SuppressWarnings("WeakerAccess")
 public class IntSpan {
-    private static final String emptyString = "-";
+    private static final String EMPTY_STRING = "-";
 
-    // Real Largest int is posInf - 1
-    private static final int posInf = 2147483647 - 1; // INT_MAX - 1
-    private static final int negInf = -2147483648 + 1; // INT_MIN + 1
+    // Real Largest int is POS_INF - 1
+    private static final int POS_INF = 2147483647 - 1; // INT_MAX - 1
+    private static final int NEG_INF = -2147483648 + 1; // INT_MIN + 1
 
-    // TODO: Try HPPC
+    // HPPC IntArrayList (less memory than ArrayList<Integer>)
     private IntArrayList edges = new IntArrayList();
 
     //----------------------------------------------------------
@@ -97,7 +97,7 @@ public class IntSpan {
      * @return positive infinity
      */
     public static int getPosInf() {
-        return posInf - 1;
+        return POS_INF - 1;
     }
 
     /**
@@ -106,7 +106,7 @@ public class IntSpan {
      * @return negative infinity
      */
     public static int getNegInf() {
-        return negInf;
+        return NEG_INF;
     }
 
     /**
@@ -115,7 +115,7 @@ public class IntSpan {
      * @return empty string "-"
      */
     public static String getEmptyString() {
-        return emptyString;
+        return EMPTY_STRING;
     }
 
     //----------------------------------------------------------
@@ -170,7 +170,7 @@ public class IntSpan {
     @Override
     public String toString() {
         if ( isEmpty() ) {
-            return emptyString;
+            return EMPTY_STRING;
         }
 
         String runlist = "";
@@ -288,7 +288,7 @@ public class IntSpan {
      * @return <tt>true</tt> if this set is negative infinite
      */
     public boolean isNegInf() {
-        return edges.get(0) == negInf;
+        return edges.get(0) == NEG_INF;
     }
 
     /**
@@ -297,7 +297,7 @@ public class IntSpan {
      * @return <tt>true</tt> if this set is positive infinite
      */
     public boolean isPosInf() {
-        return edges.get(edges.size() - 1) == posInf;
+        return edges.get(edges.size() - 1) == POS_INF;
     }
 
     /**
@@ -480,7 +480,7 @@ public class IntSpan {
 
     public IntSpan add(String runlist) {
         // skip empty set
-        if ( !runlist.isEmpty() && !runlist.equals(emptyString) ) {
+        if ( !runlist.isEmpty() && !runlist.equals(EMPTY_STRING) ) {
             addRange(runlistToRanges(runlist));
         }
 
@@ -492,9 +492,9 @@ public class IntSpan {
      * <p>
      * Because our notion of infinity is actually disappointingly finite inverting a finite set
      * results in another finite set. For example inverting the empty set makes it contain all the
-     * integers between negInf and posInf inclusive.
+     * integers between NEG_INF and POS_INF inclusive.
      * <p>
-     * As noted above negInf and posInf are actually just big integers.
+     * As noted above NEG_INF and POS_INF are actually just big integers.
      *
      * @return this set for method chaining
      */
@@ -502,7 +502,7 @@ public class IntSpan {
         if ( isEmpty() ) {
             // Universal set
             edges = new IntArrayList();
-            edges.add(negInf, posInf);
+            edges.add(NEG_INF, POS_INF);
         } else {
             // Either add or remove infinity from each end. The net effect is always an even number
             // of additions and deletions
@@ -510,13 +510,13 @@ public class IntSpan {
             if ( isNegInf() ) {
                 edges.remove(0); // shift
             } else {
-                edges.insert(0, negInf); // unshift
+                edges.insert(0, NEG_INF); // unshift
             }
 
             if ( isPosInf() ) {
                 edges.remove(edges.size() - 1); // pop
             } else {
-                edges.add(posInf); // push
+                edges.add(POS_INF); // push
             }
         }
 
@@ -590,7 +590,7 @@ public class IntSpan {
 
     public IntSpan remove(String runlist) {
         // empty set
-        if ( !runlist.isEmpty() && !runlist.equals(emptyString) ) {
+        if ( !runlist.isEmpty() && !runlist.equals(EMPTY_STRING) ) {
             removeRange(runlistToRanges(runlist));
         }
 

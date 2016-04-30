@@ -15,7 +15,7 @@ IntSpan set = new IntSpan();
 set.add(new int[]{1, 2, 3, 5, 7, 9});
 set.addPair(100, 10000);
 set.remove(1000);
-System.out.println(set.asString()); // 1-3,5,7,9,100-999,1001-10000
+System.out.println(set.toString()); // 1-3,5,7,9,100-999,1001-10000
 ```
 
 ## DESCRIPTION
