@@ -65,7 +65,7 @@ public class IntSpanSynopsisTest {
             set.addPair(100, 10000);
             set.remove(1000);
 
-            IntSpan set2 = new IntSpan(IntSpan.getEmptyString());
+            IntSpan set2 = new IntSpan();
             set2.add(set);
 
             testConstructors(set2);
@@ -79,7 +79,7 @@ public class IntSpanSynopsisTest {
             set.addPair(100, 10000);
             set.remove(1000);
 
-            IntSpan set2 = new IntSpan(IntSpan.getEmptyString());
+            IntSpan set2 = new IntSpan();
             set2.add(set);
 
             testConstructors(set2);
@@ -93,7 +93,7 @@ public class IntSpanSynopsisTest {
                 set.add(i);
             }
             set.addPair(100, 10000);
-            set.remove(1000);
+            set.remove(new int[]{1000});
 
             IntSpan set2 = new IntSpan(IntSpan.getEmptyString());
             set2.add(set);
@@ -110,16 +110,17 @@ public class IntSpanSynopsisTest {
             ranges1000.add(1000, 1000);
 
             set.clear().
-                addPair(1, 3).add(5).add(7).add(9).addPair(100, 10000)
-                .merge(set1000).subtract(set1000)
-                .remove(7).add(7)
-                .remove("7").add("7")
-                .add(1000).remove(1000)
-                .addRange(ranges1000).removeRange(ranges1000)
-                .addPair(1000, 1000).removePair(1000, 1000)
-                .add("1000").remove("1000")
-                .add(set1000).remove(set1000)
-                .remove(1000);
+                    addPair(1, 3).add(5).add(7).add(9).addPair(100, 10000)
+                    .merge(set1000).subtract(set1000)
+                    .remove(7).add(7)
+                    .remove("7").add("7")
+                    .add(1000).remove(1000)
+                    .addRange(ranges1000).removeRange(ranges1000)
+                    .addPair(1000, 1000).removePair(1000, 1000)
+                    .add("1000").remove("1000")
+                    .add(new int[]{1000}).remove(new int[]{1000})
+                    .add(set1000).remove(set1000)
+                    .remove(1000);
 
             testConstructors(set);
         }
