@@ -76,8 +76,8 @@ public class IntSpanBenchmark {
         }
 
         String readFile(String filename) {
-            String content = "";
-            InputStream in = getClass().getResourceAsStream(filename);
+            String      content = "";
+            InputStream in      = getClass().getResourceAsStream(filename);
 
             try ( BufferedReader reader = new BufferedReader(new InputStreamReader(in)) ) {
                 String line;
@@ -109,17 +109,17 @@ public class IntSpanBenchmark {
             IntArrayList vec1 = new IntArrayList();
 
             for ( int i : new int[]{
-                    1, 30,
-                    32, 149,
-                    153, 155,
-                    159, 247,
-                    250, 250,
-                    253, 464,
-                    516, 518,
-                    520, 523,
-                    582, 585,
-                    595, 600,
-                    622, 1679
+                1, 30,
+                32, 149,
+                153, 155,
+                159, 247,
+                250, 250,
+                253, 464,
+                516, 518,
+                520, 523,
+                582, 585,
+                595, 600,
+                622, 1679
             } ) {
                 vec1.add(i);
             }
@@ -147,10 +147,7 @@ public class IntSpanBenchmark {
                 }
                 if ( step >= 6 ) {
                     for ( int j = 1; j <= 200; j++ ) {
-                        IntArrayList vec3 = new IntArrayList();
-                        vec3.add(j * 5);
-                        vec3.add(j * 10);
-                        set.addRange(vec3);
+                        set.addPair(j * 5, j * 10);
                     }
                 }
             }
@@ -164,12 +161,12 @@ public class IntSpanBenchmark {
      */
     public static void main(String[] args) {
         String jarName = new java.io.File(IntSpanBenchmark.class.getProtectionDomain()
-                .getCodeSource()
-                .getLocation()
-                .getPath())
-                .getName();
+            .getCodeSource()
+            .getLocation()
+            .getPath())
+            .getName();
         String prefix = "java -jar " + jarName;
-        String usage = String.format("Usage:\n    %s benchmark\n    %s file\n", prefix, prefix);
+        String usage  = String.format("Usage:\n    %s benchmark\n    %s file\n", prefix, prefix);
 
         if ( args.length == 0 ) {
             System.err.print(usage);

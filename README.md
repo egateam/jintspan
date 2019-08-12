@@ -64,7 +64,7 @@ This Java class is ported from the Perl module `AlignDB::IntSpan` which contains
 
 ```
 $ mvn clean verify
-$ command time -l java -jar target/jintspan-*.jar file 50
+$ command time -l java -jar target/jintspan-0.2.1-jar-with-dependencies.jar file 50
 step 1 create
 duration 1.200802
 step 2 intersect
